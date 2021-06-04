@@ -10,7 +10,7 @@
                 <h4>Loading...</h4>
             </div>
         </div>
-        <div id="completed">
+        <div id="completed" class="container">
             <div class="row">
                 <div id="com_mes" class="col-12">
                     <h3>COMPLETED</h3>

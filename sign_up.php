@@ -114,20 +114,12 @@ if (isset($_POST['role'])) {
 ?>
 })
 
-// $("#reset").on('click', function() {
-//     $(".error_m").remove();
-//     $(".is_checked").remove();
-// })
-
-$("#reset").click(function() {
-    l.fadeIn();
-    setTimeout(() => {
-        show_mes('您的電子郵件已經在本系統註冊過了，請使用其他的電子郵件。');
-        b.click(function() {
-            close_load();
-        });
-    }, 3000);
+$("#reset").on('click', function() {
+    $(".error_m").remove();
+    $(".is_checked").remove();
 })
+
+
 
 function submit() {
     // console.log('click');
@@ -164,7 +156,9 @@ function submit() {
         function(result) {
             if (result == 'OVERLAP') {
                 show_mes('您的電子郵件已經在本系統註冊過了，請使用其他的電子郵件。');
-                b.click(close_load());
+                b.click(function() {
+                    close_load();
+                });
                 // alert('您的電子郵件已經在本系統註冊過了，請使用其他的電子郵件。');
             } else if (result == 'INSERTED') {
                 show_mes('註冊成功，歡迎使用本系統。');
@@ -175,7 +169,9 @@ function submit() {
             } else {
                 // alert('註冊失敗，請聯絡系統管理員。');
                 show_mes('註冊失敗，請聯絡系統管理員。');
-                b.click(close_load());
+                b.click(function() {
+                    close_load();
+                });
                 console.log(result);
             }
         }

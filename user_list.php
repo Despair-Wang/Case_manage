@@ -99,6 +99,7 @@ $(document).ready(function() {
     $('#prev_b').hide()
     loading();
     $('#role_type,#show_count').change(function() {
+        start = 0;
         btn_init();
     });
 })
@@ -126,55 +127,77 @@ function loading() {
 }
 
 function btn_init() {
-    let limit = get_number('row_id', 'user');
-    count = $('#show_count').val();
-    // console.log("l = " + limit);
-    // console.log("c = " + count);
-    if (limit <= count) {
-        $('#next_b').hide();
-        $('#prev_b').hide();
-    } else {
-        $('#next_b').show();
-        $('#prev_b').hide();
-    };
-    loading();
-}
-
-function get_number(target, table) {
     let s_role = ($('#role_type').val() == 'all') ? (1) : (`\`role\` = '${$('#role_type').val()}'`);
-    let got_number;
     $.ajax({
         url: 'http://127.0.0.1/api.php?do=get_number',
         type: 'post',
         data: {
-            target: target,
-            table: table,
+            target: 'row_id',
+            table: 'user',
             where: s_role
         },
-        async: false,
         success: function(result) {
-            got_number = eval(result);
+            let limit = eval(result);
+            count = eval($('#show_count').val());
+            if (limit <= count) {
+                $('#next_b').hide();
+                $('#prev_b').hide();
+            } else {
+                $('#next_b').show();
+                $('#prev_b').hide();
+            };
+            loading();
         }
     })
-    return got_number;
+
+
 }
 
-function getCookie(name) {
-    const cv = `;${document.cookie}`;
-    const part = cv.split(`; ${name}=`);
-    return part.pop().split(";").shift();
-}
+// function get_number(target, table) {
+//     let s_role = ($('#role_type').val() == 'all') ? (1) : (`\`role\` = '${$('#role_type').val()}'`);
+//     let got_number;
+//     $.ajax({
+//         url: 'http://127.0.0.1/api.php?do=get_number',
+//         type: 'post',
+//         data: {
+//             target: target,
+//             table: table,
+//             where: s_role
+//         },
+//         async: false,
+//         success: function(result) {
+//             got_number = eval(result);
+//         }
+//     })
+//     return got_number;
+// }
+
 
 function next() {
-    let limit = get_number("row_id", "user");
-    if (start <= limit - count) {
-        start += count;
-        loading();
-        $("#prev_b").show();
-        if (start >= limit - count) {
-            $('#next_b').hide();
+    // la.l.fadeIn();
+    let s_role = ($('#role_type').val() == 'all') ? (1) : (`\`role\` = '${$('#role_type').val()}'`);
+    $.ajax({
+        url: 'http://127.0.0.1/api.php?do=get_number',
+        type: 'post',
+        data: {
+            target: 'row_id',
+            table: 'user',
+            where: s_role
+        },
+        success: function(result) {
+            let limit = eval(result);
+            if (start <= limit - count) {
+                start += count;
+                loading();
+                $("#prev_b").show();
+                if (start >= limit - count) {
+                    $('#next_b').hide();
+                }
+            }
         }
-    }
+    })
+    // let limit = get_number("row_id", "user");
+
 }
 
 

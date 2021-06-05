@@ -93,6 +93,7 @@ require_once "footer.php";
 </body>
 <script>
 var start, count = 5;
+var la = new loading_anime();
 $(document).ready(function() {
     start = 0;
     $('#prev_b').hide()
@@ -103,6 +104,7 @@ $(document).ready(function() {
 })
 
 function loading() {
+    la.l.fadeIn();
     let s_role = ($('#role_type').val() == 'all') ? (1) : (`\`role\` = '${$('#role_type').val()}'`);
     $.ajax({
         type: "POST",
@@ -113,6 +115,7 @@ function loading() {
             limit: count
         },
         success: function(result) {
+            la.l.hide();
             if (result != 'FAIL') {
                 $('#list_content').html(result);
             } else {

@@ -49,6 +49,8 @@ body {
 
 #loading {
     display: none;
+    position: relative;
+    z-index: 4;
 }
 
 #loading > div {
@@ -110,6 +112,7 @@ body {
     text-align: center;
     padding-top: 10px;
     padding-bottom: 10px;
+    background: rgba(0, 0, 0, 0.8);
 }
 
 #com_btn > button {
@@ -1046,7 +1049,6 @@ body {
 }
 #pic {
     border: 10px solid #fff;
-    max-width: 200px;
 }
 
 .case_info h5 input {

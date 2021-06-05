@@ -1,4 +1,6 @@
+
 $(document).ready(function () {
+
     let open = false;
     $('.sb_btn').click(function () {
         let bar1 = $('.sb_btn ul li:first-child');
@@ -19,3 +21,24 @@ $(document).ready(function () {
     });
 
 });
+var loading_anime = function () {
+    this.l = $('#loading');
+    this.b = $('#com_btn > button');
+    var mes = $('#com_mes > h3'),
+        r = $('#run'),
+        c = $('#completed');
+    this.show_mes = function(message) {
+        r.hide();
+        mes.html(message);
+        c.slideToggle();
+
+    }
+
+    this.close_load = function() {
+        this.l.hide();
+        setTimeout(() => {
+            r.show();
+            c.hide();
+        }, 100);
+    }
+}

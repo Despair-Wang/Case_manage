@@ -171,13 +171,16 @@ echo "let user_row_id = '{$_SESSION['row_id']}';\n";
     $(document).ready(function() {
         loading();
     })
+    var la = new loading_anime();
 
     function loading() {
+        la.l.fadeIn();
         $.post(
             'http://127.0.0.1/api.php?do=user_info', {
                 row_id
             },
             function(result) {
+                la.l.hide();
                 $('head').append(result);
             }
         )
@@ -185,20 +188,29 @@ echo "let user_row_id = '{$_SESSION['row_id']}';\n";
 
     function user_delete() {
         if (confirm("確定要刪除本筆資料？")) {
+            l.fadeIn();
             $.post(
                 'http://127.0.0.1/api.php?do=user_delete', {
                     row_id
                 },
                 function(result) {
                     if (result == 'DELETED') {
-                        alert('資料已經刪除');
-                        if (user_row_id == row_id) {
-                            location.href = "logout.php";
-                        } else {
-                            history.back(1);
-                        }
+                        show_mes('資料已經刪除');
+                        // alert('資料已經刪除');
+                        b.click(function() {
+                            close_load();
+                            if (user_row_id == row_id) {
+                                location.href = "logout.php";
+                            } else {
+                                history.back(1);
+                            }
+                        })
                     } else {
-                        alert('刪除失敗，請聯絡系統管理員');
+                        // alert('刪除失敗，請聯絡系統管理員');
+                        show_mes('刪除失敗，請聯絡系統管理員');
+                        b.click(function() {
+                            close_load();
+                        })
                     }
                 }
             )

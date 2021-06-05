@@ -96,12 +96,16 @@ $(document).ready(function() {
     loading();
 })
 
+var la = new loading_anime();
+
 function loading() {
+    la.l.fadeIn();
     $.post(
         'http://127.0.0.1/api.php?do=update_get', {
             row_id
         },
         function(result) {
+            la.l.hide();
             $('body').append(result);
         }
     )
@@ -136,17 +140,26 @@ function submit() {
 
     let data = $(':input').serialize();
     // console.log("data is " + data);
-
+    la.l.fadeIn();
     $.post(
         'http://127.0.0.1/api.php?do=update_set',
         data,
         function(result) {
             if (result == 'UPDATED') {
-                alert('資料更新完成！部分資料會在下次登入後生效。');
-                go_back();
+                // alert('資料更新完成！部分資料會在下次登入後生效。');
+                la.show_mes('資料更新完成！部分資料會在下次登入後生效。');
+                la.b.click(function() {
+                    la.close_load();
+                    go_back();
+                })
             } else {
-                alert('資料更新失敗，請聯絡系統管理員。');
+                // alert('資料更新失敗，請聯絡系統管理員。');
+                la.show_mes('資料更新失敗，請聯絡系統管理員。');
                 console.log(result);
+                la.b.click(function() {
+                    la.close_load();
+                })
+
             }
         }
     )

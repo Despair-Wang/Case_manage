@@ -23,6 +23,7 @@
     </div>
 </div>
 <script>
+
 $(document).ready(function() {
     <?php
 init();

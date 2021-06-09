@@ -20,7 +20,7 @@ set_init($hello_role);
         <li id="logout"><a href="logout.php">登出</a></li>
         <li id="my_info"><a href="user_info.php">我的資訊</a></li>
         <li id="calender"><a href="#">出勤管理</a></li>
-        <li id="case"><a href="case_list.html">預約案件管理</a></li>
+        <li id="case"><a href="case_list.php">預約案件管理</a></li>
         <?php
 $role = $_SESSION['role'];
 if ($role == 'admin') {

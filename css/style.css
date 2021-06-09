@@ -395,6 +395,10 @@ body {
     .welcome {
         font-size: 4.5rem;
     }
+    .assign {
+        padding: 1px 6px !important;
+        transform: translateX(0) !important;
+    }
 }
 
 @keyframes wel_word {
@@ -628,7 +632,7 @@ body {
 }
 
 .info_header {
-    margin-top: 4%;
+    /* margin-top: 4%; */
 }
 
 .assign,
@@ -694,7 +698,7 @@ body {
 }
 
 .reply_star {
-    padding-left: 4%;
+    padding-left: 0;
 }
 
 .reply_star > span {
@@ -1051,7 +1055,11 @@ body {
     border: 10px solid #fff;
 }
 
-.case_info h5 input {
+.case_info h5 input[type='text'],
+.case_info h5 input[type='email'],
+.case_info h5 input[type='tel'],
+.case_info h5 input[type='date'] {
+    width: 100%;
     border: 0;
     background-color: transparent;
     border-bottom: 2px solid #fff;
@@ -1147,4 +1155,12 @@ body {
     to {
         color: darkblue;
     }
+}
+
+#reply_block {
+    display: none;
+}
+
+#case_id_block {
+    display: none;
 }

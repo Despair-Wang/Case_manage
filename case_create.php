@@ -12,33 +12,55 @@ require_once "head.php";
         <!-- 側邊控制欄 -->
         <?php
 require_once "sidebar.php";
-set_title("新增案件");
-set_h1("CASE INSERT");
+if (isset($_POST['case_id'])) {
+    set_title("案件更新");
+    set_h1("CASE UPDATE");
+} else {
+    set_title("新增案件");
+    set_h1("CASE INSERT");
+}
 ?>
+        <div id="back" onclick="go_back()">
+            <div>BACK</div>
+            <div></div>
+            <div></div>
+        </div>
         <!-- 主題內文 -->
         <div class="container">
             <div class="case_info">
+                <div id="case_id_blcok" class='row info_header'>
+                    <div class='col-12 col-md-8 offset-md-2'>
+                        <div class='row'>
+                            <div class='col-5'>
+                                <h5>案件編號</h5>
+                            </div>
+                            <div class='col-7'>
+                                <h5 id='case_id'></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- block-1 -->
                 <div class="row info_header">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <h5>預約項目</h5>
                             </div>
-                            <div class="col-8">
+                            <div class="col-7">
                                 <h5>
                                     <input type="text" name="c_title" id="c_title">
                                 </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <h5>指派人員</h5>
                             </div>
-                            <div class="col-5">
-
+                            <div class="col-4">
+                                <h5 id="order_name"></h5>
                             </div>
                             <div class="col-3">
                                 <a class="assign btn" href="#">指派</a>
@@ -48,196 +70,216 @@ set_h1("CASE INSERT");
                 </div>
                 <!-- block-2 -->
                 <div class="row info_block">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <h5>期望車種</h5>
                             </div>
-                            <div class="col-8">
-                                <h5>重裝帕坦</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <select name="car_type" id="car_type">
+                                        <option value="小客車">小客車</option>
+                                        <option value="大客車">大客車</option>
+                                        <option value="箱型車">箱型車</option>
+                                        <option value="休旅車">休旅車</option>
+                                    </select>
+                                </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-4">
-                                <h5>付款狀態</h5>
+                            <div class="col-5">
+                                <h5>處理狀態</h5>
                             </div>
-                            <div class="col-8">
-                                <h5>已付款</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <select name="case_status" id="case_status">
+                                        <option value="待處理">待處理</option>
+                                        <option value="已指派">已指派</option>
+                                        <option value="已結束">已結束</option>
+                                        <option value="已取消">已取消</option>
+                                    </select>
+                                </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <h5>姓名</h5>
                             </div>
-                            <div class="col-8">
-                                <input type="text" name="c_title" id="c_title">
+                            <div class="col-7">
+                                <h5>
+                                    <input type="text" name="c_name" id="c_name">
+                                </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <h5>電話</h5>
                             </div>
-                            <div class="col-8">
-                                <input type="number" name="c_title" id="c_title">
+                            <div class="col-7">
+                                <h5>
+                                    <input type="tel" name="c_tel" id="c_tel">
+                                </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <h5>人數</h5>
                             </div>
-                            <div class="col-8">
-                                <h5>3人</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <select name="c_number" id="c_number">
+                                        <option value="1">1人</option>
+                                        <option value="2">2人</option>
+                                        <option value="3">3人</option>
+                                        <option value="4">4人</option>
+                                        <option value="5">5人</option>
+                                        <option value="6">6人</option>
+                                        <option value="7">7人</option>
+                                        <option value="8">8人</option>
+                                    </select>
+                                </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <h5>電子郵件</h5>
                             </div>
-                            <div class="col-8">
-                                <h5>awsl@mail.com.tw</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <input type="email" name="c_mail" id="c_mail">
+                                </h5>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- block-3 -->
                 <div class="row info_block">
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-5">
                                 <h5>第一期望日期</h5>
                             </div>
-                            <div class="col-6">
-                                <h5>2021-05-10</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <input type="date" name="c_date1" id="c_date1">
+                                </h5>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-5">
                                 <h5>開始時段</h5>
                             </div>
-                            <div class="col-6">
-                                <h5>08:00</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <select name="c_time1" id="c_time1"></select>
+                                </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-5">
                                 <h5>第二期望日期</h5>
                             </div>
-                            <div class="col-6">
-                                <h5>2021-05-10</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <input type="date" name="c_date2" id="c_date2">
+                                </h5>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-5">
                                 <h5>開始時段</h5>
                             </div>
-                            <div class="col-6">
-                                <h5>08:00</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <select name="c_time2" id="c_time2"></select>
+                                </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
-                            <div class="col-6">
-                                <h5>第一期望日期</h5>
+                            <div class="col-5">
+                                <h5>第三期望日期</h5>
                             </div>
-                            <div class="col-6">
-                                <h5>2021-05-10</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <input type="date" name="c_date3" id="c_date3">
+                                </h5>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-5">
                                 <h5>開始時段</h5>
                             </div>
-                            <div class="col-6">
-                                <h5>08:00</h5>
+                            <div class="col-7">
+                                <h5>
+                                    <select name="c_time3" id="c_time3"></select>
+                                </h5>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- block-4 -->
                 <div class="row info_block">
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
                             <div class="col-12">
                                 <h5>額外服務</h5>
                             </div>
                             <div class="col-12">
-                                <h5>租用兒童安全座椅</h5>
-                                <h5>攜帶輪椅</h5>
+                                <h5>
+                                    <input type="checkbox" name="option1" id="option1">
+                                    <label class="cur_p" for="option1">租用兒童安全座椅</label>
+                                </h5>
+                                <h5>
+                                    <input type="checkbox" name="option2" id="option2">
+                                    <label class="cur_p" for="option2">攜帶輪椅</label>
+                                </h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-8">
+                    <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
                             <div class="col-12">
                                 <h5>備註</h5>
                             </div>
                             <div class="col-12">
                                 <h5>
-                                    優惠讀者職業雲林依法機械鈴聲下載就算追求等方面，門口資金參加搭配處理藥物移動購買及其，回頭眾人做什麼網絡投入解釋不承擔本報，告知嚴重招生鈴聲下載，至少每次具備紡織專業動力新增教學鄉民採購人們，居民困難複雜完美魔法製造思考增強科技有限公司，家長那麼多分享旁。
+                                    <textarea id="c_remark" name="c_remark" rows="5"></textarea>
                                 </h5>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- block-5 -->
-                <div class="row info_block">
-                    <div class="col-12 reply_title">
-                        <h5>案件回饋評價</h5>
-                    </div>
-                    <div class="col-12">
-                        <div class="reply_star">
-                            <span>★</span>
-                            <span>★</span>
-                            <span>★</span>
-                            <span>★</span>
-                            <span>★</span>
-                            <h6>0</h6>
-                        </div>
-                    </div>
-                    <div class="col-12 reply_content">
-                        <h5>
-                            下列下午物業你好感覺到瘋狂汽車面臨儘快是有網易，居然推坑王英語鏡頭一眼當地走了探索規格哪裡評論，轉身練習更新點擊相關圖片烏日全身選項更大決策那種還在行情，清除二人飛機連接室內居民，無關原料日記股權公主直接的是臨床楠雅三個人員諮詢好像，形式日子方式矛盾放在，魔獸富岡好激動變化她的預防命運第二次有什麼，成本計算機課堂這一則是到我應用模擬黑色學術太陽房東它是這些，所以上傳世界思想實踐，未來經過一年，歌。
-                        </h5>
-                    </div>
-                    <div class="col-12 reply_content re">
-                        <h5>from 管理者：</h5>
-                        <h5>
-                            展開模式風雲一種正好活力話題十二街道也在廠商陽明山，元素幽默各國一點上面一會旅遊找到良好，之後家族我要演唱家長便利商店威望付款目的抱著此時角色項目，他還很多人下了分配體育很容易思考股份有限公司動力，形象實際上對她開心無比什麼事很容易位於表明熱點，走了這麼。
-                        </h5>
-                    </div>
-                    <div class="col-12 reply_keyin">
-                        <div id="reply" class="textarea" contenteditable="true" placeholder="please key in..."></div>
-                        <div class="d-flex justify-content-end my-4">
-                            <a class="btn reply_btn">回覆</a>
-                        </div>
-                    </div>
-                </div>
+
                 <!-- control-button -->
+                <form name="back" action="case_info.php" method="POST">
+                    <input type="hidden" name="case_id" id="case_id_back">
+                </form>
                 <div class="row">
                     <div class="col-12">
                         <div class="row">
                             <div class="col-6">
-                                <a href="" class="btn case_ctrl">
-                                    <h4>修改</h4>
-                                </a>
+                                <button id="submit" class="btn case_ctrl" onclick="submit()">
+                                    <h4>新增</h4>
+                                </button>
                             </div>
                             <div class="col-6">
-                                <a href="" class="btn case_ctrl">
-                                    <h4>刪除</h4>
-                                </a>
+                                <button class="btn case_ctrl" type="reset">
+                                    <h4>重填</h4>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -250,30 +292,99 @@ require_once "footer.php";
 ?>
 </body>
 <script>
+var la = new loading_anime(),
+    update = false;
+<?php
+if (isset($_POST['case_id'])) {
+    echo <<<upd
+    case_id = '{$_POST['case_id']}';
+    update = true;
+    set_date("{$_POST['case_id']}");
+    upd;
+}
+?>
 $('document').ready(function() {
-    var star = $('.reply_star span');
-    for (let i = 0; i < star.length; i++) {
-        $(star[i]).click(function() {
-            star_light(i);
-        });
+    if (update) {
+        $('#submit').children().html('更新');
     }
-    $('.reply_btn').click(function() {
-        let str = $('.textarea').html();
-        let contect = `<div class="col-12 reply_content re"><h5>老司機</h5><h5>${str}</h5></div>`;
-        $('.reply_content')[-1].insertAdjacentElement(contect);
-    });
-
-    function star_light(index) {
-        console.log('click');
-        for (let i = 0; i < star.length; i++) {
-            $(star[i]).css('color', 'rgba(255, 255, 0, 0.2)');
-        }
-        for (let i = 0; i <= index; i++) {
-            $(star[i]).css('color', 'rgba(255,255,0,1)');
-        }
-        $('.reply_star h6').html(index + 1);
-    }
+    set_time();
+    $('.row').addClass('mb-2');
 });
+
+function set_date(id) {
+    la.l.fadeIn();
+    $.ajax({
+        url: 'http://127.0.0.1/api.php?do=case_update_get',
+        type: 'post',
+        data: {
+            case_id: id
+        },
+        success: function(result) {
+            la.l.hide();
+            $('body').after(result);
+        }
+    })
+}
+
+function submit() {
+    la.l.fadeIn();
+    let data = $(':input').serialize();
+    if (update) {
+        $.post('http://127.0.0.1/api.php?do=case_update_set',
+            data,
+            function(result) {
+                if (result == 'UPDATED') {
+                    la.show_mes('案件更新成功');
+                    la.b.click(function() {
+                        la.close_load();
+                        go_back()
+                    })
+                } else {
+                    la.show_mes('更新失敗，請聯絡系管');
+                    console.log(result);
+                    la.b.click(function() {
+                        la.close_load();
+                    })
+                }
+            }
+        )
+    } else {
+        $.post('http://127.0.0.1/api.php?do=case_insert',
+            data,
+            function(result) {
+                if (result == 'INSERTED') {
+                    la.show_mes('案件新增成功');
+                    la.b.click(function() {
+                        la.close_load();
+                        location.href = 'case_list.php';
+                    })
+                } else {
+                    la.show_mes('新增失敗，請聯絡系管');
+                    console.log(result);
+                    la.b.click(function() {
+                        la.close_load();
+                    })
+                }
+            })
+    }
+}
+
+function set_time() {
+    for (let i = 0; i < 7; i++) {
+        let hh = (8 + i).toString();
+        hh = (hh.length < 2) ? ("0" + hh) : (hh);
+        for (let j = 0; j < 2; j++) {
+            let mm = (30 * j).toString();
+            mm = (mm.length < 2) ? ("0" + mm) : (mm);
+            let time = hh + ":" + mm;
+            $('#c_time1,#c_time2,#c_time3').append(`<option value="${time}">${time}</option>`)
+        }
+    }
+}
+
+function go_back() {
+    document.forms['back'].submit();
+}
 </script>
 
 </html>

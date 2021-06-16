@@ -75,14 +75,14 @@ set_h1("USER LIST");
 
                 </div>
                 <form action="user_info.php" method="post">
-                    <input type="hidden" name="row_id" id="row_id">
+                    <input type="hidden" name="serial" id="serial">
                 </form>
                 <div class="row list_control">
-                    <div class="col-4"><a id="prev_b" onclick="prev()">
-                            < PREV</a>
+                    <div class="col-4"><a id="prev_b" onclick="prev()"><i class="fa fa-caret-left"></i>&ensp;PREV</a>
                     </div>
-                    <div class="col-4"><a id="frist_b" onclick="frist()">FRIST</a></div>
-                    <div class="col-4"><a id="next_b" onclick="next()">NEXT ></a></div>
+                    <div class="col-4"><a id="first_b" onclick="first()">FIRST</a></div>
+                    <div class="col-4"><a id="next_b" onclick="next()">NEXT&ensp;<i class="fa fa-caret-right"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -132,8 +132,8 @@ function btn_init() {
         url: 'http://127.0.0.1/api.php?do=get_number',
         type: 'post',
         data: {
-            target: 'row_id',
-            table: 'user',
+            target: 'serial',
+            table: 'users',
             where: s_role
         },
         success: function(result) {
@@ -149,29 +149,7 @@ function btn_init() {
             loading();
         }
     })
-
-
 }
-
-// function get_number(target, table) {
-//     let s_role = ($('#role_type').val() == 'all') ? (1) : (`\`role\` = '${$('#role_type').val()}'`);
-//     let got_number;
-//     $.ajax({
-//         url: 'http://127.0.0.1/api.php?do=get_number',
-//         type: 'post',
-//         data: {
-//             target: target,
-//             table: table,
-//             where: s_role
-//         },
-//         async: false,
-//         success: function(result) {
-//             got_number = eval(result);
-//         }
-//     })
-//     return got_number;
-// }
-
 
 function next() {
     // la.l.fadeIn();
@@ -180,8 +158,8 @@ function next() {
         url: 'http://127.0.0.1/api.php?do=get_number',
         type: 'post',
         data: {
-            target: 'row_id',
-            table: 'user',
+            target: 'serial',
+            table: 'users',
             where: s_role
         },
         success: function(result) {
@@ -196,8 +174,6 @@ function next() {
             }
         }
     })
-    // let limit = get_number("row_id", "user");
-
 }
 
 
@@ -212,7 +188,7 @@ function prev() {
     }
 }
 
-function frist() {
+function first() {
     start = 0;
     $('#next_b').show();
     $('#prev_b').hide();
@@ -221,7 +197,7 @@ function frist() {
 
 function submit(index) {
     let f = document.forms[0];
-    f.row_id.value = index;
+    f.serial.value = index;
     f.submit();
 }
 </script>

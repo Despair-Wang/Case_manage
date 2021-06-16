@@ -13,14 +13,13 @@ require_once "head.php";
         <div class="content">
             <?php
 require_once "sidebar.php";
-set_h1("USER INFOMATION");
+set_h1("USER INFORMATION");
 set_title("會員資料檢視");
 if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
     set_init("$('.admin_only').show();");
 }
 ?>
             <!-- 主題內文 -->
-
             <div id="back" onclick="location.href='user_list.php'">
                 <div>BACK</div>
                 <div></div>
@@ -134,7 +133,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
                     </div>
                 </div>
                 <form action="user_create.php" method="POST">
-                    <input type="hidden" name="row_id" id="row_id">
+                    <input type="hidden" name="serial" id="serial">
                     <input type="hidden" name="role" id="role">
                     <div class="row">
                         <div class="col-12">
@@ -161,12 +160,12 @@ require_once "footer.php";
 ?>
     <script>
     <?php
-if (isset($_POST['row_id'])) {
-    echo "let row_id = '{$_POST['row_id']}';\n";
+if (isset($_POST['serial'])) {
+    echo "let serial = '{$_POST['serial']}';\n";
 } else {
-    echo "let row_id = '{$_SESSION['row_id']}';\n";
+    echo "let serial = '{$_SESSION['serial']}';\n";
 }
-echo "let user_row_id = '{$_SESSION['row_id']}';\n";
+echo "let user_serial = '{$_SESSION['serial']}';\n";
 ?>
     $(document).ready(function() {
         loading();
@@ -177,7 +176,7 @@ echo "let user_row_id = '{$_SESSION['row_id']}';\n";
         la.l.fadeIn();
         $.post(
             'http://127.0.0.1/api.php?do=user_info', {
-                row_id
+                serial
             },
             function(result) {
                 la.l.hide();
@@ -188,18 +187,18 @@ echo "let user_row_id = '{$_SESSION['row_id']}';\n";
 
     function user_delete() {
         if (confirm("確定要刪除本筆資料？")) {
-            l.fadeIn();
+            la.l.fadeIn();
             $.post(
                 'http://127.0.0.1/api.php?do=user_delete', {
-                    row_id
+                    serial
                 },
                 function(result) {
                     if (result == 'DELETED') {
-                        show_mes('資料已經刪除');
+                        la.show_mes('資料已經刪除');
                         // alert('資料已經刪除');
-                        b.click(function() {
-                            close_load();
-                            if (user_row_id == row_id) {
+                        la.b.click(function() {
+                            la.close_load();
+                            if (user_serial == serial) {
                                 location.href = "logout.php";
                             } else {
                                 history.back(1);
@@ -207,9 +206,9 @@ echo "let user_row_id = '{$_SESSION['row_id']}';\n";
                         })
                     } else {
                         // alert('刪除失敗，請聯絡系統管理員');
-                        show_mes('刪除失敗，請聯絡系統管理員');
-                        b.click(function() {
-                            close_load();
+                        la.show_mes('刪除失敗，請聯絡系統管理員');
+                        la.b.click(function() {
+                            la.close_load();
                         })
                     }
                 }
@@ -219,7 +218,7 @@ echo "let user_row_id = '{$_SESSION['row_id']}';\n";
 
     function update() {
         let f = document.forms[0];
-        f.row_id.value = row_id;
+        f.serial.value = serial;
         f.submit();
     }
     </script>

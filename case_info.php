@@ -13,19 +13,24 @@ require_once "head.php";
         <?php
 require_once "sidebar.php";
 set_title('預約案件詳細');
-set_h1('CASE INFOMATION');
+set_h1('CASE INFORMATION');
 ?>
         <!-- 主題內文 -->
+        <div id="back" onclick="location.href='case_list.php'">
+            <div>BACK</div>
+            <div></div>
+            <div></div>
+        </div>
         <div class="container">
             <div class="case_info">
-                <div id="case_id_blcok" class='row info_header'>
+                <div id="case_id_block" class='row info_header'>
                     <div class='col-12 col-md-6'>
                         <div class='row'>
                             <div class='col-4'>
                                 <h5>案件編號</h5>
                             </div>
                             <div class='col-8'>
-                                <h5 id='case_id'></h5>
+                                <h5 id='serial'></h5>
                             </div>
                         </div>
                     </div>
@@ -38,7 +43,7 @@ set_h1('CASE INFOMATION');
                                 <h5>預約項目</h5>
                             </div>
                             <div class="col-8">
-                                <h5 id="c_title"></h5>
+                                <h5 id="service"></h5>
                             </div>
                         </div>
                     </div>
@@ -48,10 +53,10 @@ set_h1('CASE INFOMATION');
                                 <h5>指派人員</h5>
                             </div>
                             <div class="col-5">
-                                <h5 id="order_name"></h5>
+                                <h5 id="staff"></h5>
                             </div>
                             <div class="col-3">
-                                <a id="assign" class="assign btn" href="#">指派</a>
+                                <a id="assign_submit" class="assign btn" href="#">指派</a>
                             </div>
                         </div>
                     </div>
@@ -74,7 +79,7 @@ set_h1('CASE INFOMATION');
                                 <h5>處理狀態</h5>
                             </div>
                             <div class="col-8">
-                                <h5 id="case_status"></h5>
+                                <h5 id="status"></h5>
                             </div>
                         </div>
                     </div>
@@ -84,7 +89,7 @@ set_h1('CASE INFOMATION');
                                 <h5>姓名</h5>
                             </div>
                             <div class="col-8">
-                                <h5 id="c_name"></h5>
+                                <h5 id="name"></h5>
                             </div>
                         </div>
                     </div>
@@ -94,7 +99,7 @@ set_h1('CASE INFOMATION');
                                 <h5>電話</h5>
                             </div>
                             <div class="col-8">
-                                <h5 id="c_tel"></h5>
+                                <h5 id="tel"></h5>
                             </div>
                         </div>
                     </div>
@@ -104,7 +109,7 @@ set_h1('CASE INFOMATION');
                                 <h5>人數</h5>
                             </div>
                             <div class="col-8">
-                                <h5 id="c_number"></h5>
+                                <h5 id="number"></h5>
                             </div>
                         </div>
                     </div>
@@ -114,7 +119,7 @@ set_h1('CASE INFOMATION');
                                 <h5>電子郵件</h5>
                             </div>
                             <div class="col-8">
-                                <h5 id="c_mail"></h5>
+                                <h5 id="mail"></h5>
                             </div>
                         </div>
                     </div>
@@ -127,7 +132,7 @@ set_h1('CASE INFOMATION');
                                 <h5>第一期望日期</h5>
                             </div>
                             <div class="col-6">
-                                <h5 id="c_date1"></h5>
+                                <h5 id="date1"></h5>
                             </div>
                         </div>
                         <div class="row">
@@ -135,7 +140,7 @@ set_h1('CASE INFOMATION');
                                 <h5>開始時段</h5>
                             </div>
                             <div class="col-6">
-                                <h5 id="c_time1"></h5>
+                                <h5 id="time1"></h5>
                             </div>
                         </div>
                     </div>
@@ -145,7 +150,7 @@ set_h1('CASE INFOMATION');
                                 <h5>第二期望日期</h5>
                             </div>
                             <div class="col-6">
-                                <h5 id="c_date2"></h5>
+                                <h5 id="date2"></h5>
                             </div>
                         </div>
                         <div class="row">
@@ -153,7 +158,7 @@ set_h1('CASE INFOMATION');
                                 <h5>開始時段</h5>
                             </div>
                             <div class="col-6">
-                                <h5 id="c_time2"></h5>
+                                <h5 id="time2"></h5>
                             </div>
                         </div>
                     </div>
@@ -163,7 +168,7 @@ set_h1('CASE INFOMATION');
                                 <h5>第一期望日期</h5>
                             </div>
                             <div class="col-6">
-                                <h5 id="c_date3"></h5>
+                                <h5 id="date3"></h5>
                             </div>
                         </div>
                         <div class="row">
@@ -171,7 +176,7 @@ set_h1('CASE INFOMATION');
                                 <h5>開始時段</h5>
                             </div>
                             <div class="col-6">
-                                <h5 id="c_time3"></h5>
+                                <h5 id="time3"></h5>
                             </div>
                         </div>
                     </div>
@@ -183,7 +188,7 @@ set_h1('CASE INFOMATION');
                             <div class="col-12">
                                 <h5>額外服務</h5>
                             </div>
-                            <div class="col-12" id="c_option">
+                            <div class="col-12" id="option">
                             </div>
                         </div>
                     </div>
@@ -193,7 +198,7 @@ set_h1('CASE INFOMATION');
                                 <h5>備註</h5>
                             </div>
                             <div class="col-12">
-                                <h5 id="c_remark">
+                                <h5 id="remark">
                                 </h5>
                             </div>
                         </div>
@@ -219,7 +224,10 @@ set_h1('CASE INFOMATION');
                 </div>
                 <!-- control-button -->
                 <form id="update" name="update" action="case_create.php" method="post">
-                    <input type="hidden" name="case_id">
+                    <input type="hidden" name="serial">
+                </form>
+                <form id="assign" name="assign" action="case_assign.php" method="post">
+                    <input type="hidden" name="serial">
                 </form>
                 <div class="row">
                     <div class="col-12">
@@ -246,21 +254,26 @@ require_once "footer.php";
 </body>
 <script>
 <?php
-echo "var case_id = '{$_POST['case_id']}';";
-echo "var user_role = '{$_SESSION['role']}';";
-echo "var user_name = '{$_SESSION['name']}';";
+echo "var serial = '{$_POST['serial']}';";
+echo "var role = '{$_SESSION['role']}';";
+echo "var name = '{$_SESSION['name']}';";
 ?>
 var la = new loading_anime();
 var star = $('.reply_star span');
 $('document').ready(function() {
     loading();
     show_reply();
+    $('#assign_submit').click(function() {
+        let f = document.forms['assign'];
+        f.serial.value = serial;
+        f.submit();
+    })
 });
 
 function loading() {
     la.l.fadeIn();
     $.post('http://127.0.0.1/api.php?do=case_info', {
-            case_id
+            serial
         },
         function(result) {
             la.l.hide();
@@ -280,11 +293,11 @@ function reply() {
         url: 'http://127.0.0.1/api.php?do=case_reply',
         type: 'post',
         data: {
-            case_id: case_id,
-            user_name: user_name,
-            user_role: user_role,
+            serial: serial,
+            name: name,
+            role: role,
             score: eval($('.reply_star>h6').html()),
-            reply: $('#reply').html()
+            message: $('#message').html()
         },
         success: function(result) {
             if (result == 'DONE') {
@@ -310,27 +323,33 @@ function show_reply() {
         url: 'http://127.0.0.1/api.php?do=show_reply',
         type: 'post',
         data: {
-            case_id: case_id
+            serial: serial
         },
         success: function(result) {
-            console.log(result);
+            // console.log(result);
             let res = result.substr(0, 1);
-            if (res != '0') {
+            if (res == '1') {
+                star.unbind();
+                star.css('cursor', 'default');
                 console.log('done');
-                let score = result.substr(1, 2);
+                let score = eval(result.substr(1, 1)) - 1;
                 let content = result.substr(2);
                 $('#content_block').html(content);
-                star_light(eval(score) - 1);
+                star_light(score);
             } else {
                 console.log('not reply yet');
-                let content = result.substr(1);
-                $('#content_block').html(content);
-                for (let i = 0; i < star.length; i++) {
-                    $(star[i]).click(function() {
-                        star_light(i);
-                    });
+                if (role == 'user') {
+                    let content = result.substr(1);
+                    $('#content_block').html(content);
+                    for (let i = 0; i < star.length; i++) {
+                        $(star[i]).bind("click", function() {
+                            star_light(i);
+                        });
+                    }
+                    star_light(0);
+                } else {
+                    $('#reply_block').hide();
                 }
-                star_light(0);
             }
         }
     })
@@ -338,7 +357,7 @@ function show_reply() {
 
 function case_update() {
     let f = document.forms['update'];
-    f.case_id.value = case_id;
+    f.serial.value = serial;
     f.submit();
 }
 

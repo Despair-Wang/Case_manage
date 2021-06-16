@@ -6,7 +6,7 @@ switch ($_GET['do']) {
     case 'login':
         $mail = $_POST['mail'];
         $pw = $_POST['pw'];
-        $sql = "select `pw` from `user` where `mail` = '{$mail}';";
+        $sql = "SELECT `pw` FROM `users` WHERE `mail` = '{$mail}';";
         $result = mysqli_query($con, $sql);
         $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
         // print_r($rows);
@@ -24,7 +24,7 @@ switch ($_GET['do']) {
         }
         break;
     case 'user_list':
-        $list = "select row_id,name,role,mail,enable from `user` where {$_POST['where']} limit {$_POST['start']},{$_POST['limit']};";
+        $list = "SELECT serial,name,role,mail,enable FROM `users` WHERE {$_POST['where']} limit {$_POST['start']},{$_POST['limit']};";
         // echo $list;
         $result = mysqli_query($con, $list);
         $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -34,13 +34,13 @@ switch ($_GET['do']) {
                 ;
                 $enable = ($row['enable']) ? ("啟用") : ("凍結");
                 echo <<<block
-                        <div class="case_list" onclick="submit('{$row['row_id']}')">
+                        <div class="case_list" onclick="submit('{$row['serial']}')">
                             <div class="row">
                                 <div class="col-10">
                                     <div class="row">
                                         <div class="col-6 col-md-2">
                                             <div class="list_df">
-                                                <h5>{$row['row_id']}</h5>
+                                                <h5>{$row['serial']}</h5>
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-3">
@@ -74,8 +74,8 @@ switch ($_GET['do']) {
         }
         break;
     case 'user_info':
-        $row_id = $_POST['row_id'];
-        $sql = "select * from `user` where `row_id` = '{$row_id}';";
+        $serial = $_POST['serial'];
+        $sql = "SELECT * FROM `users` WHERE `serial` = '{$serial}';";
         $result = mysqli_query($con, $sql);
         $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
         foreach ($rows as $row) {
@@ -109,8 +109,8 @@ switch ($_GET['do']) {
         }
         break;
     case 'user_delete':
-        $row_id = $_POST['row_id'];
-        $sql = "delete from `user` where `row_id` = '{$row_id}';";
+        $serial = $_POST['serial'];
+        $sql = "delete FROM `users` WHERE `serial` = '{$serial}';";
         $result = mysqli_query($con, $sql);
         if ($result) {
             echo "DELETED";
@@ -120,8 +120,8 @@ switch ($_GET['do']) {
         break;
 
     case 'update_get':
-        $row_id = $_POST['row_id'];
-        $sql = "select * from `user` where `row_id` = {$_POST['row_id']};";
+        $serial = $_POST['serial'];
+        $sql = "SELECT * FROM `users` WHERE `serial` = {$_POST['serial']};";
         $result = mysqli_query($con, $sql);
         $row = mysqli_fetch_row($result);
         $oper_only = "";
@@ -131,8 +131,8 @@ switch ($_GET['do']) {
         echo <<<info
                 <script>
                 $(document).ready(function(){
-                    $('#row_id').val('{$row['row_id']}');
-                    $('#row_id_back').val('{$row['row_id']}');
+                    $('#serial').val('{$row['serial']}');
+                    $('#serial_back').val('{$row['serial']}');
                     $('#name').val('{$row['name']}');
                     $('#nickname').val('{$row['nickname']}');
                     $('#pw').val('{$row['pw']}');
@@ -141,13 +141,13 @@ switch ($_GET['do']) {
                     $("#newImg").html('<img id="pic" src="{$row['image']}">');
                     $("#img").val("{$row['image']}");
                     $("#role").val("{$row['role']}");
-                    $("select[name=car_type]").find("option[value='{$row['car_type']}']").attr('selected',true);
-                    $("select[name=identity]").find("option[value='{$row['identity']}']").attr('selected',true);
+                    $("SELECT[name=car_type]").find("option[value='{$row['car_type']}']").attr('SELECTed',true);
+                    $("SELECT[name=identity]").find("option[value='{$row['identity']}']").attr('SELECTed',true);
                     $('#mail').val('{$row['mail']}');
                     $('#tel').val('{$row['tel']}');
                     $('#remark').val('{$row['remark']}');
-                    $('select[name=enable]').find("option[value='{$row['enable']}']").attr('selected',true);
-                    $('select[name=role_select]').find("option[value='{$row['role']}']").attr('selected',true);
+                    $('SELECT[name=enable]').find("option[value='{$row['enable']}']").attr('SELECTed',true);
+                    $('SELECT[name=role_SELECT]').find("option[value='{$row['role']}']").attr('SELECTed',true);
                     {$oper_only}
                 });
                 </script>
@@ -167,7 +167,7 @@ switch ($_GET['do']) {
                 $img = str_replace('data:image/png;base64,', '', $img);
                 $img = str_replace(' ', '+', $img);
                 $data = base64_decode($img);
-                $file = UPLOAD_PATH . $_POST['mail'] . '.png';
+                $file = UPLOAD_PATH . $_POST['serial'] . '.png';
 
             } else {
                 $file = $_POST['img'];
@@ -176,15 +176,15 @@ switch ($_GET['do']) {
 
         $remark = (isset($_POST['remark'])) ? ("{$_POST['remark']}") : ("");
         $enable = (isset($_POST['enable'])) ? ($_POST['enable']) : (0);
-        $role = (isset($_POST['role_select'])) ? ($_POST['role_select']) : ($_POST['role']);
+        $role = (isset($_POST['role_SELECT'])) ? ($_POST['role_SELECT']) : ($_POST['role']);
 
-        $row_id = $_POST['row_id'];
-        $sql = "update `user` set `name`= '{$_POST['name']}',`nickname`= '{$_POST['nickname']}',";
+        $serial = $_POST['serial'];
+        $sql = "update `users` set `name`= '{$_POST['name']}',`nickname`= '{$_POST['nickname']}',";
         $sql .= "`sex`= '{$_POST['sex']}',`pw`= '{$_POST['pw']}',`identity`= '{$_POST['identity']}',";
         $sql .= "`car_type`= '{$_POST['car_type']}',`mail`= '{$_POST['mail']}',`tel`= '{$_POST['tel']}',";
         $sql .= "`remark`= '{$_POST['remark']}',`image`= '{$file}',`enable`= '{$_POST['enable']}',";
         $sql .= "`role`= '{$role}' ";
-        $sql .= "where `row_id` = {$_POST['row_id']};";
+        $sql .= "WHERE `serial` = {$_POST['serial']};";
         $result = mysqli_query($con, $sql);
 
         if ($result) {
@@ -199,67 +199,80 @@ switch ($_GET['do']) {
 
         break;
     case 'sign_up':
-        $mail_check = "SELECT `row_id` from `user` WHERE `mail` = '{$_POST['mail']}'";
+        $mail_check = "SELECT `serial` FROM `users` WHERE `mail` = '{$_POST['mail']}'";
         $check_result = mysqli_query($con, $mail_check);
         $result_row = mysqli_fetch_all($check_result, MYSQLI_ASSOC);
         if (count($result_row) > 0) {
             echo "OVERLAP";
         } else {
-            define('UPLOAD_PATH', 'img/');
-            if ($_POST['img'] == "") {
-                $img_name = "default";
-                $file = UPLOAD_PATH . $img_name . '.png';
 
-            } else {
-                $base64 = "data";
-                if (strpos($_POST['img'], $base64) !== false) {
-                    $img = $_POST['img'];
-                    $img = str_replace('data:image/png;base64,', '', $img);
-                    $img = str_replace(' ', '+', $img);
-                    $data = base64_decode($img);
-                    $file = UPLOAD_PATH . $_POST['mail'] . '.png';
-                    $result = file_put_contents($file, $data);
-
-                } else {
-                    $file = $_POST['img'];
-                }
-            }
-
-            $sql = "INSERT INTO `user` (`role`, `name`, `sex`, `pw`, `mail`, `tel`, `identity`, `car_type`, `nickname`, `image`, `enable`) VALUES ('{$_POST['role']}', '{$_POST['name']}', '{$_POST['sex']}', '{$_POST['pw']}', '{$_POST['mail']}', '{$_POST['tel']}', '{$_POST['identity']}', '{$_POST['car_type']}', '{$_POST['nickname']}','{$file}', '0');";
+            $sql = "INSERT INTO `users` (`role`, `name`, `sex`, `pw`, `mail`, `tel`, `identity`, `car_type`, `nickname`, `enable`) VALUES ('{$_POST['role']}', '{$_POST['name']}', '{$_POST['sex']}', '{$_POST['pw']}', '{$_POST['mail']}', '{$_POST['tel']}', '{$_POST['identity']}', '{$_POST['car_type']}', '{$_POST['nickname']}', 0);";
+            // echo $sql;
             $result = mysqli_query($con, $sql);
             if ($result) {
-                echo "INSERTED";
+                $sql = "SELECT `serial` FROM `users` WHERE `mail` = '{$_POST['mail']}';";
+                $result = mysqli_query($con, $sql);
+                $id = mysqli_fetch_row($result)[0];
+                define('UPLOAD_PATH', 'img/');
+                if ($_POST['img'] == "") {
+                    $img_name = "default";
+                    $file = UPLOAD_PATH . $img_name . '.png';
+
+                } else {
+                    $base64 = "data";
+                    if (strpos($_POST['img'], $base64) !== false) {
+                        $img = $_POST['img'];
+                        $img = str_replace('data:image/png;base64,', '', $img);
+                        $img = str_replace(' ', '+', $img);
+                        $data = base64_decode($img);
+                        $file = UPLOAD_PATH . $id . '.png';
+                        $result = file_put_contents($file, $data);
+
+                    } else {
+                        $file = $_POST['img'];
+                    }
+                }
+                $sql = "update `users` set `image`= '{$file}' WHERE `serial` = '{$id}';";
+                $result = mysqli_query($con, $sql);
+                if ($result) {
+                    echo "INSERTED";
+                } else {
+                    echo 'second error is ' . $result;
+                }
             } else {
-                echo $result;
+                echo 'first error is ' . $result;
             }
         }
         break;
     case 'get_number':
-        $sql = "select `{$_POST['target']}` from `{$_POST['table']}` WHERE {$_POST['where']};";
+        $sql = "SELECT `{$_POST['target']}` FROM `{$_POST['table']}` WHERE {$_POST['where']};";
         $result = mysqli_query($con, $sql);
         $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
         echo count($rows); //
         // return count($rows);
         break;
     case 'case_list':
-        $sql = "select `case_id`,`create_date`,`c_title`,`c_name`,`case_status` from `order_case` where {$_POST['where']} limit {$_POST['start']},{$_POST['count']};";
+        $sql = "SELECT `serial`,`day1_at`,`service`,`name`,`status`,`created_at` FROM `orders` WHERE {$_POST['where']} limit {$_POST['start']},{$_POST['count']};";
+        // echo $sql;
         $result = mysqli_query($con, $sql);
         $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
         foreach ($rows as $row) {
-            $c_date = substr("{$row['create_date']}", 0, 10);
+            $day1 = substr("{$row['day1_at']}", 0, 10);
+            $created = substr("{$row['created_at']}", 0, 10);
             echo <<<list
-                <div class="case_list" onclick="submit('{$row['case_id']}')">
+                <div class="case_list" onclick="submit('{$row['serial']}')">
                     <div class="row">
-                        <div class="col-10">
+                        <div class="col-11">
                             <div class="row">
-                                <div class="col-6 col-md-3"><h5>{$row['case_id']}</h5></div>
-                                <div class="col-6 col-md-2"><h5>$c_date</h5></div>
-                                <div class="col-5 col-md-3"><h5>{$row['c_name']}</h5></div>
-                                <div class="col-7 col-md-4"><h5>{$row['c_title']}</h5></div>
+                                <div class="col-4 col-md-3"><h5>{$row['serial']}</h5></div>
+                                <div class="col-4 col-md-2"><h5>{$day1}</h5></div>
+                                <div class="col-4 col-md-2"><h5>{$row['name']}</h5></div>
+                                <div class="col-5 col-md-3"><h5>{$row['service']}</h5></div>
+                                <div class="col-7 col-md-2"><h5>{$created}</h5></div>
                             </div>
                         </div>
-                        <div class="col-2 d-flex align-items-center justify-content-center">
-                            <h5>{$row['case_status']}</h5>
+                        <div class="col-1 d-flex align-items-center justify-content-center">
+                            <h5>{$row['status']}</h5>
                         </div>
                     </div>
                 </div>
@@ -267,48 +280,52 @@ switch ($_GET['do']) {
         }
         break;
     case 'case_info':
-        $case_id = $_POST['case_id'];
-        $sql = "select * from `order_case` where `case_id` = '{$case_id}';";
+        $serial = $_POST['serial'];
+        $sql = "SELECT * FROM `orders` WHERE `serial` = '{$serial}';";
         // echo $sql;
         $result = mysqli_query($con, $sql);
         if ($result) {
             $row = mysqli_fetch_assoc($result);
+            $staff = '';
             $can_reply = '';
-            if ($row['case_status'] == '已結束') {
+            if ($row['status'] == '已結束') {
                 $can_reply = '$("#reply_block").show();';
             }
-            $c_option = '';
-            $op_rs = explode(',', $row['c_option']);
+            if ($row['staff'] != '') {
+                $staff = mysqli_fetch_row(mysqli_query($con, "SELECT `name` FROM `users` WHERE `serial` = '{$row['staff']}';"))[0];
+            }
+            $option = '';
+            $op_rs = explode(',', $row['option']);
             foreach ($op_rs as $op_r) {
                 $val = explode('=', $op_r);
-                $c_option .= set_option($val[0], $val[1]);
+                $option .= set_option($val[0], $val[1]);
             }
-            $c_date1 = get_c_time($row['c_day1'], 0);
-            $c_time1 = substr(get_c_time($row['c_day1'], 1), 0, 5);
-            $c_date2 = get_c_time($row['c_day2'], 0);
-            $c_time2 = substr(get_c_time($row['c_day2'], 1), 0, 5);
-            $c_date3 = get_c_time($row['c_day3'], 0);
-            $c_time3 = substr(get_c_time($row['c_day3'], 1), 0, 5);
+            $date1 = get_time($row['day1_at'], 0);
+            $time1 = substr(get_time($row['day1_at'], 1), 0, 5);
+            $date2 = get_time($row['day2_at'], 0);
+            $time2 = substr(get_time($row['day2_at'], 1), 0, 5);
+            $date3 = get_time($row['day3_at'], 0);
+            $time3 = substr(get_time($row['day3_at'], 1), 0, 5);
             echo <<<info
             <script>
                 $(function(){
-                    $('#case_id').html('{$row['case_id']}');
-                    $('#c_name').html('{$row['c_name']}');
-                    $('#c_title').html('{$row['c_title']}');
-                    $('#c_mail').html('{$row['c_mail']}');
-                    $('#c_tel').html('{$row['c_tel']}');
-                    $('#c_number').html('{$row['c_number']}人');
-                    $('#order_name').html('{$row['order_name']}');
-                    $('#c_remark').html('{$row['c_remark']}');
+                    $('#serial').html('{$row['serial']}');
+                    $('#name').html('{$row['name']}');
+                    $('#service').html('{$row['service']}');
+                    $('#mail').html('{$row['mail']}');
+                    $('#tel').html('{$row['tel']}');
+                    $('#number').html('{$row['number']}人');
+                    $('#staff').html('{$staff}');
+                    $('#remark').html('{$row['remark']}');
                     $('#car_type').html('{$row['car_type']}');
-                    $('#case_status').html('{$row['case_status']}');
-                    $('#c_option').html('{$c_option}');
-                    $('#c_date1').html('{$c_date1}');
-                    $('#c_time1').html('{$c_time1}');
-                    $('#c_date2').html('{$c_date2}');
-                    $('#c_time2').html('{$c_time2}');
-                    $('#c_date3').html('{$c_date3}');
-                    $('#c_time3').html('{$c_time3}');
+                    $('#status').html('{$row['status']}');
+                    $('#option').html('{$option}');
+                    $('#date1').html('{$date1}');
+                    $('#time1').html('{$time1}');
+                    $('#date2').html('{$date2}');
+                    $('#time2').html('{$time2}');
+                    $('#date3').html('{$date3}');
+                    $('#time3').html('{$time3}');
                     {$can_reply}
                 })
             </script>
@@ -318,14 +335,14 @@ switch ($_GET['do']) {
         }
         break;
     case 'case_insert':
-        $c_day1 = date('Y-m-d H:i:s', strtotime($_POST['c_date1'] . " " . $_POST['c_time1']));
-        $c_day2 = date('Y-m-d H:i:s', strtotime($_POST['c_date2'] . " " . $_POST['c_time2']));
-        $c_day3 = date('Y-m-d H:i:s', strtotime($_POST['c_date3'] . " " . $_POST['c_time3']));
+        $day1 = date('Y-m-d H:i:s', strtotime($_POST['date1'] . " " . $_POST['time1']));
+        $day2 = date('Y-m-d H:i:s', strtotime($_POST['date2'] . " " . $_POST['time2']));
+        $day3 = date('Y-m-d H:i:s', strtotime($_POST['date3'] . " " . $_POST['time3']));
         $opt1 = (isset($_POST['option1'])) ? ('option1=true') : ('option1=false');
         $opt2 = (isset($_POST['option2'])) ? ('option2=true') : ('option2=false');
-        $c_option = $opt1 . ',' . $opt2;
-        $sql = "insert into `order_case` (`c_title`,`c_name`,`c_tel`,`c_mail`,`c_number`,`car_type`,`c_day1`,`c_day2`,`c_day3`,`c_option`,`c_remark`,`case_status`) ";
-        $sql .= "values('{$_POST['c_title']}','{$_POST['c_name']}','{$_POST['c_tel']}','{$_POST['c_mail']}',{$_POST['c_number']},'{$_POST['car_type']}','{$c_day1}','{$c_day2}','{$c_day3}','{$c_option}','{$_POST['c_remark']}','待處理');";
+        $option = $opt1 . ',' . $opt2;
+        $sql = "insert into `orders` (`title`,`name`,`tel`,`mail`,`number`,`car_type`,`day1_at`,`day2_at`,`day3_at`,`option`,`remark`,`status`) ";
+        $sql .= "values('{$_POST['title']}','{$_POST['name']}','{$_POST['tel']}','{$_POST['mail']}',{$_POST['number']},'{$_POST['car_type']}','{$day1}','{$day2}','{$day3}','{$option}','{$_POST['remark']}','待處理');";
         // echo $sql;
         $result = mysqli_query($con, $sql);
         if ($result) {
@@ -336,49 +353,53 @@ switch ($_GET['do']) {
         }
         break;
     case 'case_update_get':
-        $case_id = $_POST['case_id'];
-        $sql = "select * from `order_case` where `case_id` = '{$_POST['case_id']}';";
+        $serial = $_POST['serial'];
+        $sql = "SELECT * FROM `orders` WHERE `serial` = '{$_POST['serial']}';";
         // echo $sql;
         $result = mysqli_query($con, $sql);
         if ($result) {
             $row = mysqli_fetch_assoc($result);
-            $c_option = '';
-            $op_rs = explode(',', $row['c_option']);
+            $option = '';
+            $op_rs = explode(',', $row['option']);
             foreach ($op_rs as $op_r) {
                 $val = explode('=', $op_r);
                 if ($val[1] == 'true') {
-                    $c_option .= "$('#{$val[0]}').attr('checked','true');";
+                    $option .= "$('#{$val[0]}').attr('checked','true');";
                 }
             }
-            $c_date1 = get_c_time($row['c_day1'], 0);
-            $c_time1 = substr(get_c_time($row['c_day1'], 1), 0, 5);
-            $c_date2 = get_c_time($row['c_day2'], 0);
-            $c_time2 = substr(get_c_time($row['c_day2'], 1), 0, 5);
-            $c_date3 = get_c_time($row['c_day3'], 0);
-            $c_time3 = substr(get_c_time($row['c_day3'], 1), 0, 5);
+            $staff = '';
+            if ($row['staff'] != '') {
+                $staff = mysqli_fetch_row(mysqli_query($con, "SELECT `name` FROM `users` WHERE `serial` = '{$row['staff']}';"))[0];
+            }
+            $date1 = get_time($row['day1_at'], 0);
+            $time1 = substr(get_time($row['day1_at'], 1), 0, 5);
+            $date2 = get_time($row['day2_at'], 0);
+            $time2 = substr(get_time($row['day2_at'], 1), 0, 5);
+            $date3 = get_time($row['day3_at'], 0);
+            $time3 = substr(get_time($row['day3_at'], 1), 0, 5);
             echo <<<info
                 <script>
                 $(document).ready(function(){
-                    $('#c_name').val('{$row['c_name']}');
-                    $('#c_title').val('{$row['c_title']}');
-                    $('#c_mail').val('{$row['c_mail']}');
-                    $('#c_tel').val('{$row['c_tel']}');
-                    $("select[name=c_number]").find("option[value={$row['c_number']}]").attr('selected',true);
-                    $('#order_name').val('{$row['order_name']}');
-                    $('#c_remark').val('{$row['c_remark']}');
-                    $("select[name=car_type]").find("option[value='{$row['car_type']}']").attr('selected',true);
-                    $('#c_date1').val('{$c_date1}');
-                    $("select[name=c_time1]").find("option[value='{$c_time1}']").attr('selected',true);
-                    $('#c_date2').val('{$c_date2}');
-                    $("select[name=c_time2]").find("option[value='{$c_time2}']").attr('selected',true);
-                    $('#c_date3').val('{$c_date3}');
-                    $("select[name=c_time3]").find("option[value='{$c_time3}']").attr('selected',true);
-                    $('#case_id').html('{$row['case_id']}');
-                    $('#case_id_block').show();
-                    $('.info_header:last-child > .col-12:last-child').append('<div class="row"><div class="col-5"><h5>處理狀態</h5></div><div class="col-7"><h5><select name="case_status" id="case_status"><option value="待處理">待處理</option><option value="已指派">已指派</option><option value="已結束">已結束</option><option value="已取消">已取消</option></select></h5></div></div>');
-                    $('#case_id_back').val('{$row['case_id']}');
-                    $("select[name=case_status]").find("option[value='{$row['case_status']}']").attr('selected',true);
-                    {$c_option}
+                    $('#name').val('{$row['name']}');
+                    $('#service').val('{$row['service']}');
+                    $('#mail').val('{$row['mail']}');
+                    $('#tel').val('{$row['tel']}');
+                    $("SELECT[name=number]").find("option[value={$row['number']}]").attr('SELECTed',true);
+                    $('#staff').html('{$staff}');
+                    $('#remark').val('{$row['remark']}');
+                    $("SELECT[name=car_type]").find("option[value='{$row['car_type']}']").attr('SELECTed',true);
+                    $('#date1').val('{$date1}');
+                    $("SELECT[name=time1]").find("option[value='{$time1}']").attr('SELECTed',true);
+                    $('#date2').val('{$date2}');
+                    $("SELECT[name=time2]").find("option[value='{$time2}']").attr('SELECTed',true);
+                    $('#date3').val('{$date3}');
+                    $("SELECT[name=time3]").find("option[value='{$time3}']").attr('SELECTed',true);
+                    $('#serial').html('{$row['serial']}');
+                    $('#serial_block').show();
+                    $('.info_header:eq(-1) > .col-12:eq(-1)').append('<div class="row"><div class="col-5"><h5>處理狀態</h5></div><div class="col-7"><h5><SELECT name="status" id="status"><option value="待處理">待處理</option><option value="已指派">已指派</option><option value="已結束">已結束</option><option value="已取消">已取消</option></SELECT></h5></div></div>');
+                    $('#serial_back').val('{$row['serial']}');
+                    $("SELECT[name=status]").find("option[value='{$row['status']}']").attr('SELECTed',true);
+                    {$option}
                 });
                 </script>
                 info;
@@ -388,17 +409,17 @@ switch ($_GET['do']) {
         }
         break;
     case 'case_update_set':
-        $c_day1 = date('Y-m-d H:i:s', strtotime($_POST['c_date1'] . " " . $_POST['c_time1']));
-        $c_day2 = date('Y-m-d H:i:s', strtotime($_POST['c_date2'] . " " . $_POST['c_time2']));
-        $c_day3 = date('Y-m-d H:i:s', strtotime($_POST['c_date3'] . " " . $_POST['c_time3']));
+        $day1 = date('Y-m-d H:i:s', strtotime($_POST['date1'] . " " . $_POST['time1']));
+        $day2 = date('Y-m-d H:i:s', strtotime($_POST['date2'] . " " . $_POST['time2']));
+        $day3 = date('Y-m-d H:i:s', strtotime($_POST['date3'] . " " . $_POST['time3']));
         $opt1 = (isset($_POST['option1'])) ? ('option1=true') : ('option1=false');
         $opt2 = (isset($_POST['option2'])) ? ('option2=true') : ('option2=false');
-        $c_option = $opt1 . ',' . $opt2;
-        $sql = "update `order_case` set `c_title`= '{$_POST['c_title']}',`c_name`='{$_POST['c_name']}',";
-        $sql .= "`c_tel`='{$_POST['c_tel']}',`c_mail`='{$_POST['c_mail']}',`c_number`={$_POST['c_number']},";
-        $sql .= "`car_type` = '{$_POST['car_type']}',`c_option`='{$c_option}',`c_remark`='{$_POST['c_remark']}',";
-        $sql .= "`c_day1` = '{$c_day1}',`c_day2`='{$c_day2}',`c_day3`='{$c_day3}',";
-        $sql .= "`case_status`='{$_POST['case_status']}' where `case_id` = '{$_POST['case_id']}';";
+        $option = $opt1 . ',' . $opt2;
+        $sql = "update `orders` set `service`= '{$_POST['service']}',`name`='{$_POST['name']}',";
+        $sql .= "`tel`='{$_POST['tel']}',`mail`='{$_POST['mail']}',`number`={$_POST['number']},";
+        $sql .= "`car_type` = '{$_POST['car_type']}',`option`='{$option}',`remark`='{$_POST['remark']}',";
+        $sql .= "`day1_at` = '{$day1}',`day2_at`='{$day2}',`day3_at`='{$day3}',";
+        $sql .= "`status`='{$_POST['status']}' WHERE `serial` = '{$_POST['serial']}';";
         // echo $sql;
         $result = mysqli_query($con, $sql);
         if ($result) {
@@ -409,13 +430,13 @@ switch ($_GET['do']) {
         }
         break;
     case 'case_reply':
-        $sql = "select `order_name` from `order_case` where `case_id` = '{$_POST['case_id']}';";
+        $sql = "SELECT `staff` FROM `orders` WHERE `serial` = '{$_POST['serial']}';";
         // echo $sql;
         $result = mysqli_query($con, $sql);
         if ($result) {
             $row = mysqli_fetch_row($result);
-            $order_name = $row[0];
-            $sql = "insert into `case_reply` (`case_id`,`order_name`,`reply_people`,`people_type`,`reply_score`,`reply_message`) values ('{$_POST['case_id']}','{$order_name}','{$_POST['user_name']}','{$_POST['user_role']}',{$_POST['score']},'{$_POST['reply']}');";
+            $staff = $row[0];
+            $sql = "insert into `replies` (`serial`,`staff`,`name`,`role`,`score`,`message`) values ('{$_POST['serial']}','{$staff}','{$_POST['name']}','{$_POST['role']}',{$_POST['score']},'{$_POST['message']}');";
             $result = mysqli_query($con, $sql);
             if ($result) {
                 echo 'DONE';
@@ -429,43 +450,51 @@ switch ($_GET['do']) {
         }
         break;
     case 'show_reply':
-        $sql = "select * from `case_reply` where `case_id` = '{$_POST['case_id']}';";
+        $sql = "SELECT * FROM `replies` WHERE `serial` = '{$_POST['serial']}';";
+        // echo $sql;
         $result = mysqli_query($con, $sql);
-        if ($result) {
-            // echo 1;
-            $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
-            $onlimit = (count($rows) == 3) ? (true) : (false);
+        // print_r($result);
+        $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        if (count($rows) > 0) {
+            echo 1;
+            $on_limit = (count($rows) == 3) ? (true) : (false);
             foreach ($rows as $row) {
-                if ($row['people_type'] == 'admin') {$role = "管理者";} else if ($row['people_type'] == 'operator') {$role = "司機";} else { $role = "使用者";}
-                ;
+                if ($row['role'] == 'admin') {
+                    $role = "管理者";
+                } elseif ($row['role'] == 'operator') {
+                    $role = "司機";
+                } else {
+                    $role = "使用者";
+                }
 
-                if ($row['reply_type'] == 'main') {
-                    echo $row['reply_score'];
+                if ($row['type'] == 'main') {
+                    echo $row['score'];
                 }
                 echo <<<mes
-                        <div class="col-12 reply_content {$row['reply_type']}">
-                        <h6 style="color:yellow">from {$role} {$row['reply_people']} <span style="font-size: 0.9rem;color:#fff;">{$row['create_date']}</span></h6>
-                            <h5>
-                                {$row['reply_message']}
+                        <div class="col-12 reply_content {$row['type']}">
+                        <h5 style="color:yellow">FROM {$role} {$row['name']} <span style="font-size: 0.9rem;color:#fff;">{$row['created_at']}</span></h5>
+                            <h5 id="rc">
+                                {$row['message']}
                             </h5>
                         </div>
                         mes;
-                if (!$onlimit) {
-                    echo <<<input_a
+            }
+            if (!$on_limit) {
+                echo <<<input_a
                     <div class="col-12 reply_keyin">
-                        <div id="reply" class="textarea" contenteditable="true" placeholder="please key in..."></div>
+                        <div id="message" class="textarea" contenteditable="true" placeholder="please key in..."></div>
                         <div class="d-flex justify-content-end my-4">
                             <a class="btn reply_btn" onclick="reply()">回覆</a>
                         </div>
                     </div>
                     input_a;
-                }
             }
+
         } else {
             echo 0;
             echo <<<input_a
                     <div class="col-12 reply_keyin">
-                        <div id="reply" class="textarea" contenteditable="true" placeholder="please key in..."></div>
+                        <div id="message" class="textarea" contenteditable="true" placeholder="please key in..."></div>
                         <div class="d-flex justify-content-end my-4">
                             <a class="btn reply_btn" onclick="reply()">回覆</a>
                         </div>
@@ -473,6 +502,141 @@ switch ($_GET['do']) {
                     input_a;
         }
         break;
+    case 'assign_list':
+        $sql = "SELECT `serial`,`name`,`image` FROM `users` WHERE `role` = 'operator';";
+        $result = mysqli_query($con, $sql);
+        $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        foreach ($rows as $row) {
+            echo <<<list
+                    <div id="{$row['serial']}" class="col-4 col-md-2 oper">
+                        <div class="members" onclick="sub_form('{$row['serial']}')">
+                            <img src="{$row['image']}" alt="" class="img-fluid" />
+                            <div>
+                                <h6>{$row['name']}</h6>
+                            </div>
+                        </div>
+                    </div>
+            list;
+        }
+        break;
+    case 'assign_case_get':
+        $sql = "SELECT `serial`,`service`,`day1_at`,`day2_at`,`day3_at` FROM `orders` WHERE `serial` = '{$_POST['order_serial']}';";
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            $date1 = get_time($row['day1_at'], 0);
+            $time1 = substr(get_time($row['day1_at'], 1), 0, 5);
+            $date2 = get_time($row['day2_at'], 0);
+            $time2 = substr(get_time($row['day2_at'], 1), 0, 5);
+            $date3 = get_time($row['day3_at'], 0);
+            $time3 = substr(get_time($row['day3_at'], 1), 0, 5);
+
+            echo <<<info
+            <script>
+                $(function(){
+                    $('#serial').html('{$row['serial']}');
+                    $('#service').html('{$row['service']}');
+                    $('#date').append('<option val="{$date1}">{$date1}</option>');
+                    $('#date').append('<option val="{$date2}">{$date2}</option>');
+                    $('#date').append('<option val="{$date3}">{$date3}</option>');
+                    $('#time').html('{$time1}');
+                    $('#date').change(function(){
+                        switch ($('#date').val()) {case '{$date1}':\n
+                                $('#time').html('{$time1}');\nbreak;case '{$date2}':\n$('#time').html('{$time2}');\nbreak;\ncase '{$date3}':\n$('#time').html('{$time3}');\nbreak;
+                        }
+                    });
+                    match_check('$date1');
+                });
+                </script>
+            info;
+        } else {
+            echo "FAIL";
+        }
+        break;
+    case 'assign_sub_form':
+        $sql = "SELECT `serial`,`name`,`sex`,`car_type`,`identity`,`remark`,`image` FROM `users` WHERE `serial` = '{$_POST['user_serial']}';";
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            if ($row['sex'] == 'F') {$sex = '女';} else if ($row['sex'] == 'M') {$sex = '男';} else { $sex = '其他';}
+            ;
+            echo <<<info
+            <script>
+                $('#name').html('{$row['name']}');
+                $('#user_serial').html('ID:{$_POST['user_serial']}');
+                $('#sex').html('{$sex}');
+                $('#car_type').html('{$row['car_type']}');
+                $('#identity').html('{$row['identity']}');
+                $('#remark').html('{$row['remark']}');
+                $('#pic').attr('src','{$row['image']}');
+                var c = document.getElementById('calendar');
+                console.log('done');
+                var calendar = new FullCalendar.Calendar(c, {
+                    headerToolbar: {
+                        left: 'prev,next,today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+                    },
+                    events: {
+                        url: 'get-events.php?serial={$row['serial']}',
+                        failure: function () {
+                            $('#calendar').show();
+                        },
+                    },
+                    loading: function (bool) {
+                        if(bool){la.l.fadeIn('fast');}else{la.l.hide()}
+                    },
+                });
+                calendar.render();
+            </script>
+            info;
+        }
+        break;
+    case 'match_check':
+        $match_list = "";
+        $sql = "SELECT `user_serial` FROM `schedule` WHERE `start` LIKE '{$_POST['time']}%';";
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            foreach ($rows as $row) {
+                $match_list .= '#' . $row['user_serial'] . ',';
+            }
+            echo $match_list;
+        } else {
+            echo 'NO_MATCH';
+        }
+        break;
+    case "assign_set":
+        $sql = "SELECT * FROM `schedule` WHERE `order_serial` = '{$_POST['order_serial']}';";
+        $result = mysqli_query($con, $sql);
+        if (mysqli_fetch_lengths($result) > 0) {
+            $sql = "UPDATE `schedule` SET `title` = '{$_POST['title']}',`start` = '{$_POST['start']}',";
+            $sql .= "`end` = '{$_POST['end']}',`user_serial` = '{$_POST['user_serial']}' ";
+            $sql .= "WHERE `order_serial` = '{$_POST['order_serial']}';";
+        } else {
+            $sql = "INSERT INTO `schedule` (`title`,`start`,`end`,`order_serial`,`user_serial`) ";
+            $sql .= "VALUES ('{$_POST['title']}','{$_POST['start']}','{$_POST['end']}',";
+            $sql .= "'{$_POST['order_serial']}','{$_POST['user_serial']}');";
+        }
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            $sql = "SELECT `name` FROM `users` WHERE `serial` = '{$_POST['user_serial']}';";
+            $name = mysqli_fetch_row(mysqli_query($con, $sql))[0];
+            $sql = "UPDATE `orders` SET `status` = '已指派' , `staff` = '{$_POST['user_serial']}' ";
+            $sql .= "WHERE `serial` = '{$_POST['order_serial']}';";
+            $result = mysqli_query($con, $sql);
+            if ($result) {
+                echo "ASSIGNED";
+            } else {
+                echo "FAIL";
+                echo $result;
+            }
+        } else {
+            echo "FAIL";
+            echo $result;
+        }
+        break;
+
     default:
         # code...
         break;
@@ -482,7 +646,7 @@ function set_option($opt, $bool)
 {
     global $con;
     if ($bool == 'true') {
-        $sql = "select option_name from `case_option` where `option_id` = '{$opt}';";
+        $sql = "SELECT `content` FROM `options` WHERE `name` = '{$opt}';";
         $result = mysqli_query($con, $sql);
         $row = mysqli_fetch_row($result);
         return "<h5>{$row[0]}</h5>";
@@ -491,7 +655,7 @@ function set_option($opt, $bool)
     }
 }
 
-function get_c_time($str, $index)
+function get_time($str, $index)
 {
     return explode(" ", $str)[$index];
 }

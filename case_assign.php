@@ -10,213 +10,287 @@ require_once "head.php";
 set_title("預約案件指派");
 ?>
     <script src="js/moment.js"></script>
-    <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/main.css" />
     <script src="js/main.js"></script>
     <script>
     function sub_form(number) {
-        let thisform = document.forms['cf'];
-        thisform.call.value = number;
-        thisform.submit();
+        let f = document.forms['cf'];
+        f.call.value = number;
+        f.submit();
     }
     </script>
 </head>
 
 <body>
-    <?php
+    <div class="content">
+        <!-- <div class="content"> -->
+        <?php
 require_once "sidebar.php";
 set_h1("CASE ASSIGN");
 ?>
-    <!-- 主題內文 -->
-    <div class="container">
-        <div class="case_assign">
-            <div class="row assign_title">
-                <div class="col-12">
-                    <h2>人員指派</h2>
-                </div>
-                <div class="col-12 col-md-4 offset-md-2">
-                    <h4>案件名稱</h4>
-                </div>
-                <div class="col-12 col-md-4">
-                    <h4>滾滾長江東逝水行 8hr</h4>
-                </div>
-                <div class="col-12 col-md-4 offset-md-2">
-                    <h4>預約日期</h4>
-                </div>
-                <div class="col-12 col-md-4">
-                    <h4>2021-05-10</h4>
-                </div>
-                <div class="col-12 col-md-4 offset-md-2">
-                    <h4>開始時間</h4>
-                </div>
-                <div class="col-12 col-md-4">
-                    <h4>08:00</h4>
-                </div>
-            </div>
-
-            <form name="cf" id="cf" method="POST">
-                <input type="hidden" name="call">
-                <div class="row member_list">
-                    <?php
-$get_member = "select * from user where 1;";
-$result_m = mysqli_query($con, $get_member);
-
-while ($row = mysqli_fetch_assoc($result_m)) {
-    echo <<<block
-                    <!-- member_block -->
-                    <div class="col-4 col-md-2">
-                        <div class="members" onclick="sub_form('{$row['row_id']}')">
-                            <img src="{$row['image']}" alt="" class="img-fluid" />
-                            <div>
-                                <h6>{$row['name']}</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- member_block -->
-block;
-}
-?>
-                </div>
-            </form>
+        <div id="back" onclick="go_back()">
+            <div>BACK</div>
+            <div></div>
+            <div></div>
         </div>
-    </div>
-    <div class="member_info" id="member_info">
+        <!-- 主題內文 -->
         <div class="container">
-            <div class="info_window_border">
-                <div class="info_window">
-                    <a href="" class="close_btn close_b">&times;</a>
-                    <div class="row">
-                        <?php
-if (isset($_POST['call'])) {
-    $target = $_POST['call'];
-    $get_member2 = "SELECT * FROM `user` WHERE `row_id` = {$target};";
-    // echo $get_member2;
-    $result_m2 = mysqli_query($con, $get_member2);
-    while ($row2 = mysqli_fetch_assoc($result_m2)) {
-        $img = $row2['image'];
-        $name = $row2['name'];
-        $car_type = $row2['car_type'];
-        $identity = $row2['identity'];
-        $remark = $row2['remark'];
-        if ($row2['sex'] == "F") {
-            $sex = "女";
-        } else if ($row2['sex'] == "M") {
-            $sex = "男";
-        } else {
-            $sex = "其他";
-        }
-
-        echo <<<m_info
-                        <div class="col-12 col-md-3 col-lg-2 offset-lg-1 member_pic"><img id="pic" src="{$img}" alt=""
-                                class="img-fluid" /></div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <div class="row">
-                                <div class="col-12">
-                                    <h5>姓名</h5>
-                                </div>
-                                <div class="col-12">
-                                    <h5>{$name}</h5>
-                                </div>
-                                <div class="col-12">
-                                    <h5>性別</h5>
-                                </div>
-                                <div class="col-12">
-                                    <h5>{$sex}</h5>
-                                </div>
-                                <div class="col-12">
-                                    <h5>車種</h5>
-                                </div>
-                                <div class="col-12">
-                                    <h5>{$car_type}</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <div class="row">
-                                <div class="col-12">
-                                    <h5>評價</h5>
-                                </div>
-                                <div class="col-12">
-                                    <div class="assign_star"><span>★★★★★</span></div>
-                                </div>
-                                <div class="col-12">
-                                    <h5>身分</h5>
-                                </div>
-                                <div class="col-12">
-                                    <h5>{$identity}</h5>
-                                </div>
-                                <div class="col-12">
-                                    <h5>備註</h5>
-                                </div>
-                                <div class="col-12">
-                                    <h5>{$remark}</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                        var cata = document.getElementById('calendar');
-                        var calendar = new FullCalendar.Calendar(cata, {
-                            headerToolbar: {
-                                left: 'prev',
-                                center: 'title',
-                                right: 'today next',
-                            },
-                            events: [{
-                                title: '獅頭山半日遊',
-                                start: '2021-05-25T08:00:00',
-                                end: '2021-05-25T12:00:00'
-                                        },
-                                        {
-                                            title: '滾滾長江東逝水行',
-                                            start: '2021-05-24',
-                                            allDay: true
-                                        }],
-                                    });
-                                    calendar.render();
-                                });
-                                console.log('run!');
-                                $('#member_info').addClass('open_win');
-                                $('.info_window_border').addClass('info_open');
-                                $('.info_window_border').removeClass('info_close');
-                                $('body').addClass('open_win_back');
-                                </script>
-                        m_info;
-    }
-}
-?>
+            <div class="case_assign">
+                <div class="row assign_title">
+                    <div class="col-12">
+                        <h2>人員指派</h2>
                     </div>
-                    <div id="calendar"></div>
-                    <div class="row okcansel my-3">
-                        <div class="col-6">
-                            <a href="case_info.html" class="btn case_ctrl">
-                                <h4>指派</h4>
-                            </a>
+                    <div class="col-12 col-md-4 offset-md-2">
+                        <h4>案件編號</h4>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <h4 id="serial"></h4>
+                    </div>
+                    <div class="col-12 col-md-4 offset-md-2">
+                        <h4>案件名稱</h4>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <h4 id="service"></h4>
+                    </div>
+                    <div class="col-12 col-md-4 offset-md-2">
+                        <h4>預約日期</h4>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <h4>
+                            <select id="date">
+                            </select>
+                        </h4>
+                    </div>
+                    <div class="col-12 col-md-4 offset-md-2">
+                        <h4>開始時間</h4>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <h4 id="time"></h4>
+                    </div>
+                </div>
+                <!-- member_block -->
+                <div class="row member_list">
+
+                </div>
+                <!-- member_block -->
+            </div>
+        </div>
+        <div class="member_info" id="member_info">
+            <div class="container">
+                <div class="info_window_border">
+                    <div class="info_window">
+                        <a class="close_btn close_b">&times;</a>
+                        <div class="row">
+                            <div class="col-12 col-md-3 col-lg-2 offset-lg-1 member_pic">
+                                <img id="pic" src="" alt="" class="img-fluid" />
+                                <h6 id="user_serial" class="light_word" style="color:#98efff"></h6>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h5>姓名</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5 id="name"></h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5>性別</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5 id="sex"></h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5>車種</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5 id="car_type"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h5>評價</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="assign_star"><span>★★★★★</span></div>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5>身分</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5 id="identity"></h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5>備註</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5 id="remark"></h5>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-6">
-                            <a href="" class="btn case_ctrl close_b">
-                                <h4>取消</h4>
-                            </a>
+                        <div class="row okcansel my-3">
+                            <div class="col-6">
+                                <a class="btn case_ctrl" onclick="assign()">
+                                    <h4>指派</h4>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="" class="btn case_ctrl close_b">
+                                    <h4>取消</h4>
+                                </a>
+                            </div>
                         </div>
+                        <div id="calendar_error" style="display:none"><code>get-events.php</code> 尚未運行</div>
+                        <div id="calendar"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="footer">
-        <span>案件分配管理系統 version 1.0</span>
-    </div>
+    <form name="back" action="case_info.php" method="POST">
+        <input type="hidden" name="serial" id="serial_back">
+    </form>
+    <!-- </div> -->
+    <?php
+require_once "footer.php";
+?>
+    <div id="sf"></div>
 </body>
-<script>
+<script id='ms'>
+<?php
+if (isset($_POST['serial'])) {
+    $_SESSION['serial'] = $_POST['serial'];
+}
+echo "var order_serial = '{$_SESSION['serial']}';";
+?>
+var la = new loading_anime();
 $(document).ready(function() {
-    $('.close_b').click(function() {
-        $('#member_info').removeClass('open_win');
-        $('body').removeClass('open_win_back');
-        $('.info_window_border').addClass('info_close');
-        $('.info_window_border').removeClass('info_open');
-
+    case_get();
+    loading();
+    $('#date').change(function() {
+        match_check($('#date').val());
+    })
+    $('.close_b,#member_info').on('click', function(e) {
+        if (e.target === this) {
+            $('#member_info').removeClass('open_win');
+            $('body').removeClass('open_win_back');
+            $('.info_window_border').addClass('info_close');
+            $('.info_window_border').removeClass('info_open');
+        }
     });
 });
+
+function sub_form(id) {
+    la.l.fadeIn()
+    $.ajax({
+        url: 'http://127.0.0.1/api.php?do=assign_sub_form',
+        type: 'post',
+        data: {
+            user_serial: id
+        },
+        success: function(result) {
+            $('#sf').html(result);
+            // $('#member_info').show();
+            la.l.hide();
+            $('#member_info').addClass('open_win');
+            $('.info_window_border').addClass('info_open');
+            $('.info_window_border').removeClass('info_close');
+            $('body').addClass('open_win_back');
+        }
+    })
+}
+
+function case_get() {
+    la.l.fadeIn();
+    $.ajax({
+        url: 'http://127.0.0.1/api.php?do=assign_case_get',
+        type: 'post',
+        data: {
+            order_serial: order_serial
+        },
+        success: function(result) {
+            la.l.hide();
+            if (result != 'FAIL') {
+                $('body').append(result);
+            }
+
+        }
+    })
+}
+
+function loading() {
+    $.ajax({
+        url: 'http://127.0.0.1/api.php?do=assign_list',
+        type: 'post',
+        success: function(result) {
+            if (result != '') {
+                $('.member_list').html(result);
+            }
+        }
+    })
+}
+
+function match_check(time) {
+    $('.oper').css('filter', 'brightness(1)');
+    $.ajax({
+        url: 'http://127.0.0.1/api.php?do=match_check',
+        type: 'post',
+        data: {
+            time: time
+        },
+        success: function(result) {
+            if (result != 'NO_MATCH') {
+                console.log(result);
+                let match_list = result.split(',');
+                for (let i = 0; i < match_list.length; i++) {
+                    $(match_list[i]).css('filter', 'brightness(0.3)');
+                }
+            }
+        }
+    })
+}
+
+function assign() {
+    la.l.fadeIn();
+    let start = $('#date').val() + 'T' + $('#time').html();
+    let long = parseInt('8:00'.replace(':', ''));
+    let over = ('0' + (parseInt($('#time').html().replace(':', '')) + long).toString()).substr(-4, 4);
+    let end = $('#date').val() + 'T' + over.substr(0, 2) + ':' + over.substr(2, 2);
+    $.ajax({
+        url: 'http://127.0.0.1/api.php?do=assign_set',
+        type: 'post',
+        data: {
+            order_serial: order_serial,
+            user_serial: $('#user_serial').html().substr(3),
+            title: $('#service').html(),
+            start: start,
+            end: end
+        },
+        success: function(result) {
+            if (result == 'ASSIGNED') {
+                la.show_mes('案件指派成功！');
+                la.b.click(function() {
+                    la.close_load();
+                    go_back();
+                })
+            } else {
+                la.show_mes('案件指派失敗，請聯絡系管');
+                console.log(result);
+                la.b.click(function() {
+                    la.close_load();
+                })
+            }
+        }
+    })
+}
+
+function go_back() {
+    let f = document.forms['back'];
+    f.serial.value = order_serial;
+    f.submit();
+}
 </script>
 
 </html>

@@ -47,10 +47,26 @@ body {
     height: 40px;
 }
 
+.btn_wt {
+    border: 3px solid rgba(255, 255, 255, 0.7);
+    color: #fff;
+    font-weight: 800;
+    white-space: nowrap;
+    font-size: 1.5rem;
+    transition: all 0.2s;
+}
+
+.btn_wt:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.2);
+    filter: drop-shadow(0 0 3px #fff);
+    transform: scale(1.1, 1.1);
+}
+
 #loading {
     display: none;
     position: relative;
-    z-index: 4;
+    z-index: 1090;
 }
 
 #loading > div {
@@ -536,6 +552,7 @@ body {
     font-weight: 700;
     margin-top: 0.5rem;
     word-break: break-all;
+    font-size: 1.2rem;
 }
 
 .case_list .row > div {
@@ -577,7 +594,7 @@ body {
     border-bottom: 2px solid #fff;
     color: #98efff;
     background-color: transparent;
-    background-image: linear-gradient(to left, rgba(255, 255, 255, 1) 25px, transparent 25px);
+    /* background-image: linear-gradient(to left, rgba(255, 255, 255, 1) 25px, transparent 25px); */
     transition: all 0.2s;
     margin: 5px auto;
     line-height: 2rem;
@@ -632,7 +649,7 @@ body {
 }
 
 .info_header {
-    /* margin-top: 4%; */
+    margin-top: 0;
 }
 
 .assign,
@@ -640,7 +657,7 @@ body {
     border: 3px solid rgba(255, 255, 255, 0.7);
     color: #fff;
     font-weight: 800;
-    padding: 3px 30px;
+    /* padding: 3px 30px; */
     white-space: nowrap;
     font-size: 1.5rem;
     transform: translateX(-20px);
@@ -785,6 +802,20 @@ body {
     box-shadow: 8px 8px 5px rgba(0, 0, 0, 0.5);
 }
 
+.case_assign > .row > .col-12:nth-child(odd) > h4 {
+    color: #98efff;
+    text-align: left;
+}
+.case_assign h4 select {
+    color: #98efff;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+}
+.case_assign h4 select option {
+    background-color: rgba(6, 42, 87, 0.5);
+}
+
 .assign_title {
     margin-bottom: 7px;
 }
@@ -870,6 +901,11 @@ body {
     outline: 0;
     z-index: -1;
     opacity: 0;
+    /* display: none; */
+}
+
+.member_info .col-12 > .row > .col-12:nth-child(even) > h5 {
+    color: #98efff;
 }
 
 #member_info .container {
@@ -888,6 +924,7 @@ body {
     padding: 1%;
     height: 100%;
     overflow: hidden;
+    width: 100%;
 }
 
 .info_window {
@@ -935,6 +972,7 @@ body {
     right: 15px;
     top: 0px;
     z-index: 50;
+    cursor: pointer;
 }
 
 .close_btn:hover {

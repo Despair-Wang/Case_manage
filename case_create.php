@@ -12,7 +12,7 @@ require_once "head.php";
         <!-- 側邊控制欄 -->
         <?php
 require_once "sidebar.php";
-if (isset($_POST['case_id'])) {
+if (isset($_POST['serial'])) {
     set_title("案件更新");
     set_h1("CASE UPDATE");
 } else {
@@ -28,14 +28,14 @@ if (isset($_POST['case_id'])) {
         <!-- 主題內文 -->
         <div class="container">
             <div class="case_info">
-                <div id="case_id_blcok" class='row info_header'>
+                <div id="serial_block" class='row info_header'>
                     <div class='col-12 col-md-8 offset-md-2'>
                         <div class='row'>
                             <div class='col-5'>
                                 <h5>案件編號</h5>
                             </div>
                             <div class='col-7'>
-                                <h5 id='case_id'></h5>
+                                <h5 id='serial'></h5>
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <input type="text" name="c_title" id="c_title">
+                                    <input type="text" name="service" id="service">
                                 </h5>
                             </div>
                         </div>
@@ -60,7 +60,7 @@ if (isset($_POST['case_id'])) {
                                 <h5>指派人員</h5>
                             </div>
                             <div class="col-4">
-                                <h5 id="order_name"></h5>
+                                <h5 id="staff"></h5>
                             </div>
                             <div class="col-3">
                                 <a class="assign btn" href="#">指派</a>
@@ -90,28 +90,11 @@ if (isset($_POST['case_id'])) {
                     <div class="col-12 col-md-8 offset-md-2">
                         <div class="row">
                             <div class="col-5">
-                                <h5>處理狀態</h5>
-                            </div>
-                            <div class="col-7">
-                                <h5>
-                                    <select name="case_status" id="case_status">
-                                        <option value="待處理">待處理</option>
-                                        <option value="已指派">已指派</option>
-                                        <option value="已結束">已結束</option>
-                                        <option value="已取消">已取消</option>
-                                    </select>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-8 offset-md-2">
-                        <div class="row">
-                            <div class="col-5">
                                 <h5>姓名</h5>
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <input type="text" name="c_name" id="c_name">
+                                    <input type="text" name="name" id="name">
                                 </h5>
                             </div>
                         </div>
@@ -123,7 +106,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <input type="tel" name="c_tel" id="c_tel">
+                                    <input type="tel" name="tel" id="tel">
                                 </h5>
                             </div>
                         </div>
@@ -135,7 +118,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <select name="c_number" id="c_number">
+                                    <select name="number" id="number">
                                         <option value="1">1人</option>
                                         <option value="2">2人</option>
                                         <option value="3">3人</option>
@@ -156,7 +139,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <input type="email" name="c_mail" id="c_mail">
+                                    <input type="email" name="mail" id="mail">
                                 </h5>
                             </div>
                         </div>
@@ -171,7 +154,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <input type="date" name="c_date1" id="c_date1">
+                                    <input type="date" name="date1" id="date1">
                                 </h5>
                             </div>
                         </div>
@@ -181,7 +164,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <select name="c_time1" id="c_time1"></select>
+                                    <select name="time1" id="time1"></select>
                                 </h5>
                             </div>
                         </div>
@@ -193,7 +176,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <input type="date" name="c_date2" id="c_date2">
+                                    <input type="date" name="date2" id="date2">
                                 </h5>
                             </div>
                         </div>
@@ -203,7 +186,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <select name="c_time2" id="c_time2"></select>
+                                    <select name="time2" id="time2"></select>
                                 </h5>
                             </div>
                         </div>
@@ -215,7 +198,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <input type="date" name="c_date3" id="c_date3">
+                                    <input type="date" name="date3" id="date3">
                                 </h5>
                             </div>
                         </div>
@@ -225,7 +208,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <select name="c_time3" id="c_time3"></select>
+                                    <select name="time3" id="time3"></select>
                                 </h5>
                             </div>
                         </div>
@@ -257,7 +240,7 @@ if (isset($_POST['case_id'])) {
                             </div>
                             <div class="col-12">
                                 <h5>
-                                    <textarea id="c_remark" name="c_remark" rows="5"></textarea>
+                                    <textarea id="remark" name="remark" rows="5"></textarea>
                                 </h5>
                             </div>
                         </div>
@@ -266,7 +249,7 @@ if (isset($_POST['case_id'])) {
 
                 <!-- control-button -->
                 <form name="back" action="case_info.php" method="POST">
-                    <input type="hidden" name="case_id" id="case_id_back">
+                    <input type="hidden" name="serial" id="serial_back">
                 </form>
                 <div class="row">
                     <div class="col-12">
@@ -295,11 +278,11 @@ require_once "footer.php";
 var la = new loading_anime(),
     update = false;
 <?php
-if (isset($_POST['case_id'])) {
+if (isset($_POST['serial'])) {
     echo <<<upd
-    case_id = '{$_POST['case_id']}';
+    serial = '{$_POST['serial']}';
     update = true;
-    set_date("{$_POST['case_id']}");
+    get_date("{$_POST['serial']}");
     upd;
 }
 ?>
@@ -311,13 +294,13 @@ $('document').ready(function() {
     $('.row').addClass('mb-2');
 });
 
-function set_date(id) {
+function get_date(id) {
     la.l.fadeIn();
     $.ajax({
         url: 'http://127.0.0.1/api.php?do=case_update_get',
         type: 'post',
         data: {
-            case_id: id
+            serial: id
         },
         success: function(result) {
             la.l.hide();
@@ -377,7 +360,7 @@ function set_time() {
             let mm = (30 * j).toString();
             mm = (mm.length < 2) ? ("0" + mm) : (mm);
             let time = hh + ":" + mm;
-            $('#c_time1,#c_time2,#c_time3').append(`<option value="${time}">${time}</option>`)
+            $('#time1,#time2,#time3').append(`<option value="${time}">${time}</option>`)
         }
     }
 }

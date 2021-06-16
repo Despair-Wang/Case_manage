@@ -26,7 +26,7 @@ $role = $_SESSION['role'];
 if ($role == 'admin') {
     echo <<<admin
             <li id="user"><a href="user_list.php">使用者管理</a></li>
-            <li id="service"><a href="#">服務項目管理</a></li>
+            <li id="subject"><a href="#">服務項目管理</a></li>
             admin;
 }
 ?>

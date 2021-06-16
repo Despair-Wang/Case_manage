@@ -1,0 +1,8 @@
+<script>
+    let t = '08:00';
+    t = parseInt(t.replace(':', ''));
+    t = '0' + t.toString();
+    t = t.substr(-4, 4);
+    t = t.substr(0, 2) + ':' + t.substr(2, 2);
+    console.log(t);
+</script>

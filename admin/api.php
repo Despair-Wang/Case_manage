@@ -752,68 +752,72 @@ switch ($_GET['do']) {
         $price = array();
         $step = array();
         $image_save = array();
-        $ba = $_POST['banner'];
-        $ba = str_replace('data:image/png;base64,', '', $ba);
-        $ba = str_replace(' ', '+', $ba);
-        $b_data = base64_decode($ba);
-        $banner = 'image/' . uniqid('ban', false) . '.png';
-
         for ($i = 0; $i < count($_POST['number']); $i++) {
             $temp = $_POST['number'][$i] . '人,' . $_POST['price'][$i] . '元';
             array_push($price, $temp);
         }
-        $type = '';
-        foreach ($_POST['gallery'] as $key => $value) {
-            if (strpos($value, 'jpeg') != false) {
-                $value = str_replace('data:image/jpeg;base64,', '', $value);
-                $type = '.jpeg';
-            } elseif (strpos($value, 'png') != false) {
-                $value = str_replace('data:image/png;base64,', '', $value);
-                $type = '.png';
-            }
-            $value = str_replace(' ', '+', $value);
-            $data = base64_decode($value);
-            $file = 'image/' . uniqid('gall', false) . '-' . $key . $type;
-            array_push($image_save, array($file, $data));
-        }
-        for ($i = 0; $i < count($_POST['step_title']); $i++) {
-            $temp = '';
-            $pic = $_POST['step_pic'][$i];
-            if (strpos($pic, 'jpeg') != false) {
-                $pic = str_replace('data:image/jpeg;base64,', '', $pic);
-                $type = '.jpeg';
-            } elseif (strpos($pic, 'png') != false) {
-                $pic = str_replace('data:image/png;base64,', '', $pic);
-                $type = '.png';
-            }
-            $pic = str_replace(' ', '+', $pic);
-            $data = base64_decode($pic);
-            $file = 'image/' . uniqid('step', false) . '-' . $i . $type;
-            $temp = $_POST['step_title'][$i] . ',' . $_POST['step_content'][$i] . ',' . $file;
-            array_push($step, $temp);
-            array_push($image_save, array($file, $data));
-        }
-        $step = base64_encode(serialize($step));
-        $gallery = base64_encode(serialize($gallery));
         $price = base64_encode(serialize($price));
         $options = base64_encode(serialize($_POST['options']));
-        // $sql = "INSERT INTO `service` (`title`,`banner`,`times`,`introduction`,`prices`,`options`,`content`,`gallery`,`hot`,`remark`,`enable`)";
-        // $sql .= "VALUES('{$_POST['service']}','{$banner}','{$_POST['time']}','{$_POST['intro']}','{$price}','{$options}',";
-        // $sql .= "'{$step}','{$gallery}',{$_POST['hot']},'{$_POST['remark']}',1);";
-        // echo $sql;
         $sql = "INSERT INTO `service` (`title`,`times`,`introduction`,`prices`,`options`,`hot`,`remark`,`enable`)";
         $sql .= " VALUES('{$_POST['service']}','{$_POST['time']}','{$_POST['intro']}','{$price}','{$options}',";
         $sql .= "{$_POST['hot']},'{$_POST['remark']}',1);";
         $result = mysqli_query($con, $sql);
         if ($result) {
-            echo 'INSERTED';
             $sql = "SELECT `id` FROM `service` WHERE `title` = '{$_POST['service']}' ORDER BY `created_at` DESC LIMIT 1;";
             $id = mysqli_fetch_row(mysqli_query($con, $sql))[0];
-            define('SAVE_FOLDER', 'image');
-
-            file_put_contents($banner, $b_data);
-            foreach ($image_save as $value) {
-                file_put_contents($value[0], $value[1]);
+            define('SAVE_FOLDER', 'image/' . $id . '/');
+            if (!is_dir(SAVE_FOLDER)) {
+                mkdir(SAVE_FOLDER);
+            }
+            $ba = $_POST['banner'];
+            $ba = str_replace('data:image/png;base64,', '', $ba);
+            $ba = str_replace(' ', '+', $ba);
+            $data = base64_decode($ba);
+            $banner = SAVE_FOLDER . uniqid('ban', false) . '.png';
+            array_push($image_save, array($banner, $data));
+            $type = '';
+            foreach ($_POST['gallery'] as $key => $value) {
+                if (strpos($value, 'jpeg') != false) {
+                    $value = str_replace('data:image/jpeg;base64,', '', $value);
+                    $type = '.jpeg';
+                } elseif (strpos($value, 'png') != false) {
+                    $value = str_replace('data:image/png;base64,', '', $value);
+                    $type = '.png';
+                }
+                $value = str_replace(' ', '+', $value);
+                $data = base64_decode($value);
+                $file = SAVE_FOLDER . uniqid('gall', false) . '-' . $key . $type;
+                array_push($image_save, array($file, $data));
+            }
+            for ($i = 0; $i < count($_POST['step_title']); $i++) {
+                $temp = '';
+                $pic = $_POST['step_pic'][$i];
+                if (strpos($pic, 'jpeg') != false) {
+                    $pic = str_replace('data:image/jpeg;base64,', '', $pic);
+                    $type = '.jpeg';
+                } elseif (strpos($pic, 'png') != false) {
+                    $pic = str_replace('data:image/png;base64,', '', $pic);
+                    $type = '.png';
+                }
+                $pic = str_replace(' ', '+', $pic);
+                $data = base64_decode($pic);
+                $file = SAVE_FOLDER . uniqid('step', false) . '-' . $i . $type;
+                $temp = $_POST['step_title'][$i] . ',' . $_POST['step_content'][$i] . ',' . $file;
+                array_push($step, $temp);
+                array_push($image_save, array($file, $data));
+            }
+            $step = base64_encode(serialize($step));
+            $gallery = base64_encode(serialize($gallery));
+            $sql = "UPDATE `service` SET `banner` = '{$banner}',`content` = '{$step}',`gallery` = '{$gallery}' WHERE `id` = '{$id}';";
+            $result = mysqli_query($con, $sql);
+            if ($result) {
+                foreach ($image_save as $value) {
+                    file_put_contents($value[0], $value[1]);
+                }
+                echo 'INSERTED';
+            } else {
+                echo $result;
+                echo '<br>IS FAIL';
             }
         } else {
             echo $result;

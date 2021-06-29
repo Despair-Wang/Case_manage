@@ -1,43 +1,22 @@
-<?php
-session_start();
-if (isset($_SESSION['login']) == false || $_SESSION['login'] == 0) {
-    // echo "ERROR";
-    header('Location: http://127.0.0.1/login.html');
-    exit();
-}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="expires" content="Sat, 13 Jun 2019 00:00:00 GMT" />
+<title>このカラフルな台湾に旅たちを！</title>
+<meta name="description" content="本社は空港送迎・観光も安心の日本語ドライバーによる専用車チャーターサービスをご提供します、弾丸旅行や家族旅行の強い味方です！" />
+<script src="assets/js/jquery-3.6.0.min.js"></script>
+<script src="assets/js/bootstrap.js"></script>
+<script src="assets/js/blurViewer.js"></script>
+<script src="../assets/js/scrollForever.js"></script>
+<script type="text/javascript" src="assets/js/gallery.js"></script>
+<!-- CSS -->
+<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+<link rel="stylesheet" href="assets/css/style.css" />
+<link rel="stylesheet" href="assets/css/front_style.css" />
+<link rel="stylesheet" href="../assets/css/deset2.css" />
+<link rel="stylesheet" href="../assets/css/instagram.css" />
+<link rel="stylesheet" href="../assets/css/gallery.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+</link>
 
-$init = array();
-function init()
-{
-    // $init_c = "<script>\n\t$(document).ready(function(){";
-    $init_c = "";
-    global $init;
-    foreach ($init as $value) {
-        $init_c .= "\n\t" . $value;
-    }
-    $init_c .= "\n";
-    echo $init_c;
-}
-
-function set_init($content)
-{
-    global $init;
-    array_push($init, $content);
-}
-
-function set_title($title)
-{
-    set_init("$('title').html('{$title}');");
-}
-
-?>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title></title>
-<script src="js/jquery-3.6.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="css/bootstrap.min.css" />
-<link rel="stylesheet" href="css/style.css" />
-<link rel="stylesheet" href="css/croppie.css" />
-<script type="text/javascript" src="js/a_core.js"></script>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="shortcut icon" href="../assets/icons/fmicon.png" />

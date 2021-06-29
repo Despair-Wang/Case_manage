@@ -1,8 +1,33 @@
-<script>
-    let t = '08:00';
-    t = parseInt(t.replace(':', ''));
-    t = '0' + t.toString();
-    t = t.substr(-4, 4);
-    t = t.substr(0, 2) + ':' + t.substr(2, 2);
-    console.log(t);
-</script>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>滚动条位置的获取与设置</title>
+        <style>
+            div {
+                width: 500px;
+                height: 500px;
+                overflow: scroll;
+            }
+            p {
+                text-indent: 2em;
+                width: 1000px;
+            }
+        </style>
+        <script src="assets/js/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $(':input').change(function (e) {
+                    console.log('1 = ' + e.target.value);
+                    console.log('2 = ' + $(this).val());
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <input type="checkbox" id="test1" value="value1" />
+        <label for="test1">Test1_for_id</label>
+        <input type="checkbox" name="test2" value="value2" />
+        <label for="test2">Test2_for_name</label>
+    </body>
+</html>

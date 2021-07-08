@@ -6,7 +6,8 @@
 require_once "head.php";
 ?>
     <script src="js/croppie.js"></script>
-
+    <script src="js/lc_switch.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="css/lc_switch.css" />
 </head>
 
 <body>
@@ -37,7 +38,7 @@ if (isset($_POST['serial'])) {
                                 <h5>服務編號</h5>
                             </div>
                             <div class='col-9'>
-                                <h5 id='serial'></h5>
+                                <h5 id='id'></h5>
                             </div>
                         </div>
                     </div>
@@ -53,7 +54,7 @@ if (isset($_POST['serial'])) {
                                 <label>名稱</label>
                                 <input type="text" name="service" id="service">
                                 <label>總時長</label>
-                                <input type="number" name="time" id="time">
+                                <input type="number" name="times" id="times">
                             </div>
                         </div>
                     </div>
@@ -65,10 +66,28 @@ if (isset($_POST['serial'])) {
                             <div class="col-9">
                                 <div class="row">
                                     <div class="col-12">
-                                        <div id="newImg"></div>
+                                        <div id="newBanner"></div>
                                         <div class="col-12">
                                             <input type="hidden" id="banner_post">
-                                            <input type="file" name="banner" id="banner">
+                                            <input type="file" name="banner" id="banner" class="my-3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-3">
+                                <h5>服務形象圖</h5>
+                            </div>
+                            <div class="col-9">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div id="newIndex"></div>
+                                        <div class="col-12">
+                                            <input type="hidden" id="index_post">
+                                            <input type="file" name="index" id="index" class="my-3">
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +104,7 @@ if (isset($_POST['serial'])) {
                             </div>
                             <div class="col-9 my-4">
                                 <!-- <h5 class="w-100"> -->
-                                <textarea class="w-100" id="intro" name="intro"></textarea>
+                                <div id="intro" class="textarea" contenteditable="true" placeholder="請輸入行程簡介"></div>
                                 <!-- </h5> -->
                             </div>
                         </div>
@@ -99,7 +118,7 @@ if (isset($_POST['serial'])) {
                                 <div id="price">
                                     <div class="row">
                                         <div class="col-9 col-md-4">
-                                            <input class="number" type="number" min="1">
+                                            <input class="number" type="text">
                                         </div>
                                         <div class="col-3 col-md-2">
                                             <span>人</span>
@@ -113,7 +132,7 @@ if (isset($_POST['serial'])) {
                                     </div>
                                 </div>
                                 <div class="w-100">
-                                    <a id="add_price" class="btn btn-info f_end">增加欄位</a>
+                                    <a id="add_price" class="btn btn_wt f_end my-3">增加欄位</a>
                                 </div>
                             </div>
                         </div>
@@ -144,7 +163,8 @@ if (isset($_POST['serial'])) {
                                                 <label>時長</label>
                                                 <input class="step_time" type="text">
                                                 <label>地點簡介</label>
-                                                <textarea class="w-100 step_content"></textarea>
+                                                <div class="textarea step_content" contenteditable="true"
+                                                    placeholder="請輸入地點簡介"></div>
                                             </div>
                                             <div class="col-12 col-md-4">
                                                 <label>相關圖片</label>
@@ -154,7 +174,7 @@ if (isset($_POST['serial'])) {
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <a id="add_content" class="btn btn-info f_end">增加欄位</a>
+                                        <a id="add_content" class="btn btn_wt f_end my-3">增加欄位</a>
                                     </div>
                                 </div>
                             </div>
@@ -171,12 +191,13 @@ if (isset($_POST['serial'])) {
                                         <div class="row mb-2">
                                             <div class="col-12 col-md-5">
                                                 <div class="over_hide"></div>
-                                                <input id="gallery-1" class="gallery" type="file">
+                                                <input name="g1" id="gallery-1" class="gallery" type="file">
+                                                <label>請輸入圖片說明</label><input class="gallery_alt" type="text" value="">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 my-3">
-                                        <a id="add_gallery" class="btn btn-info f_end">增加欄位</a>
+                                    <div class=" col-12 my-3">
+                                        <a id="add_gallery" class="btn btn_wt f_end my-3">增加欄位</a>
                                     </div>
                                 </div>
                             </div>
@@ -188,19 +209,35 @@ if (isset($_POST['serial'])) {
                                 <h5>備註</h5>
                             </div>
                             <div class="col-9 vertical_center">
-                                <select id="remark"></select>
+                                <select id="remark" class="select_wt"></select>
                             </div>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="row">
                             <div class="col-3">
-                                <h5>備註</h5>
+                                <h5>推廣選項</h5>
                             </div>
                             <div class="col-9">
                                 <div class="row line_align my-2">
                                     <div class="col-12">
-                                        <input type="checkbox" class="w-auto" id="hot"><label for="hot">熱推行程</label>
+                                        <label for="hot">熱推行程</label>
+                                        <input type="checkbox" class="w-auto" id="hot">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-3">
+                                <h5>服務開放狀態</h5>
+                            </div>
+                            <div class="col-9">
+                                <div class="row line_align my-2">
+                                    <div class="col-12">
+                                        <label for="enable">開放</label>
+                                        <input type="checkbox" class="w-auto" id="enable">
                                     </div>
                                 </div>
                             </div>
@@ -209,18 +246,20 @@ if (isset($_POST['serial'])) {
                 </div>
             </div>
             <!-- control-button -->
-            <form name="back" action="case_info.php" method="POST">
-                <input type="hidden" name="serial" id="serial_back">
-            </form>
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="row">
-                        <div class="col-6">
-                            <button id="submit" class="btn case_ctrl" onclick="submit()">
+                        <div class="col-4">
+                            <button id="submit" class="btn case_ctrl">
                                 <h4>新增</h4>
                             </button>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
+                            <button id="delete" class="btn case_ctrl">
+                                <h4>刪除</h4>
+                            </button>
+                        </div>
+                        <div class="col-4">
                             <button class="btn case_ctrl" type="reset">
                                 <h4>重填</h4>
                             </button>
@@ -233,8 +272,8 @@ if (isset($_POST['serial'])) {
     <div id="oldImg_frame">
         <div class="row">
             <div class="col-12">
-                <div id="oldImg">
-                </div>
+                <div id="oldBanner"></div>
+                <div id="oldIndex"></div>
             </div>
             <div class="col-12">
                 <div class="d-flex justify-content-center align-self-center">
@@ -247,6 +286,10 @@ if (isset($_POST['serial'])) {
                 </div>
             </div>
         </div>
+    </div>
+    <div>
+        <input type="hidden" name="gallery_temp" id="gallery_temp">
+        <input type="hidden" name="step_pic_temp" id="step_pic_temp">
     </div>
     </div>
     <?php
@@ -263,22 +306,31 @@ var la = new loading_anime(),
     new_width = 640,
     new_height;
 <?php
-if (isset($_POST['serial'])) {
+if (isset($_POST['id'])) {
     echo <<<upd
-    serial = '{$_POST['serial']}';
+    var id = '{$_POST['id']}',
     update = true;
-    get_date("{$_POST['serial']}");
     upd;
 }
 ?>
 $(function() {
     if (update) {
         $('#submit').children().html('更新');
+        service_get();
+    } else {
+        add_gallery();
+        add_gallery();
+        add_gallery();
     }
-    init();
+    get_options();
+    get_remark();
+    $('#submit').click(function() {
+        submit();
+    });
+    $('#delete').click(function() {
+        deleted();
+    });
 });
-
-
 
 function init() {
     $('.step_pic,.gallery').on('change', function(e) {
@@ -289,8 +341,6 @@ function init() {
             $(this).prev().html(pic);
         }
     })
-    get_options();
-    get_remark();
 }
 
 function get_options() {
@@ -299,6 +349,7 @@ function get_options() {
         type: 'post',
         success: function(result) {
             $('#options').html(result);
+            $('input[type=checkbox]').lc_switch();
         }
     })
 }
@@ -325,6 +376,7 @@ function read_file(input, id) {
             t = e.target.result;
             img.src = t;
             img.onload = function() {
+                // console.log('get pic');
                 let origin_width = img.width,
                     origin_height = img.height;
                 if (origin_width >= new_width) {
@@ -341,6 +393,7 @@ function read_file(input, id) {
                 id = parseInt(target[1]) - 1;
                 type = target[0];
                 img.setAttribute('class', 'img-fluid');
+                // console.log(img);
                 if (type == 'gallery') {
                     gallery_array[id] = p.toString();
                 } else {
@@ -353,12 +406,11 @@ function read_file(input, id) {
     return img;
 }
 
-
 $('#add_price').click(function() {
     let content =
         `<div class="row">
             <div class="col-9 col-md-4">
-                <input class="people_number" type="number" min="1">
+                <input class="number" type="text">
             </div>
             <div class="col-3 col-md-2">
                 <span>人</span>
@@ -385,7 +437,7 @@ $('#add_content').click(function() {
                 <label>時長</label>
                 <input class="step_time" type="text">
                 <label>地點簡介</label>
-                <textarea class="w-100 step_content"></textarea>
+                <div class="textarea step_content" contenteditable="true" placeholder="請輸入地點簡介"></div>
             </div>
             <div class="col-12 col-md-4">
                 <label>相關圖片</label>
@@ -399,90 +451,254 @@ $('#add_content').click(function() {
 
 let gallery_count = 1;
 $('#add_gallery').click(function() {
+    add_gallery();
+})
+
+function add_gallery() {
     gallery_count += 1;
     let content = `
     <div class="row mb-2">
         <div class="col-12 col-md-5">
             <div class="over_hide"></div>
             <input id="gallery-${gallery_count}" class="gallery" type="file">
+            <label>請輸入圖片說明</label><input class="gallery_alt" type="text" value="">
         </div>
     </div>`;
     $('#gallery').append(content);
     init();
-})
+}
 
 function submit() {
-    // la.l.fadeIn();
+    la.l.fadeIn();
     let service = $('#service').val(),
-        time = $('#time').val(),
+        times = $('#times').val(),
         banner_post = $('#banner_post').val(),
-        intro = $('#intro').val(),
+        index_post = $('#index_post').val(),
+        intro = $('#intro').html(),
         number = new Array(),
         price = new Array(),
         options = new Array(),
         step_title = new Array(),
         step_time = new Array(),
         step_content = new Array(),
+        gallery_alt = new Array(),
         remark = $('#remark').val(),
-        hot = ($('#hot').val()) ? (true) : (false);
-    $('.number').each(function() {
-        number.push($(this).val());
+        hot = $('#hot').prop('checked'),
+        enable = $('#enable').prop('checked');
+    la.b.click(function() {
+        la.close_load();
     })
+    if (service == '') {
+        la.show_mes('請輸入服務項目名稱');
+        return;
+    }
+    if (banner_post == '') {
+        la.show_mes('請選擇一張橫幅，不然前端會怨你');
+        return;
+    }
+    if (index_post == '') {
+        la.show_mes('請選擇一張形象圖，不然前端會怨你');
+        return;
+    }
+    if (intro == '') {
+        la.show_mes('請輸入服務簡介，不然企劃會唸你');
+        return;
+    }
+    if (gallery_array.length < 4) {
+        la.show_mes('請至少選擇四張相關圖片，不然前端會怨你');
+        return;
+    }
+
+    let count = 0;
+    $('.number').each(function() {
+        if (count == 0 && $(this).val() == '') {
+            la.show_mes('請至少輸入一組人數');
+            return;
+        } else if ($(this).val() != '') {
+            number.push($(this).val());
+            count++;
+        }
+    })
+    count = 0;
     $('.price').each(function() {
-        price.push($(this).val());
+        if (count == 0 && $(this).val() == '') {
+            la.show_mes('請至少輸入一組價格');
+            return;
+        } else if ($(this).val() != '') {
+            price.push($(this).val());
+            count++;
+        }
     })
     $('.options').each(function() {
-        options.push($(this).val());
+        if ($(this).prop('checked')) {
+            options.push($(this).val());
+        }
     })
+    if (options.length < 1) {
+        options.push('no_Option');
+    }
+    count = 0;
     $('.step_title').each(function() {
-        step_title.push($(this).val());
+        if (count == 0 && $(this).val() == '') {
+            la.show_mes('請至少輸入一個行程標題');
+            return;
+        } else if ($(this).val() != '') {
+            step_title.push($(this).val());
+            count++;
+        }
     })
     $('.step_time').each(function() {
-        step_time.push($(this).val());
+        if ($(this).val() == '') {
+            step_time.push('-');
+        } else {
+            step_time.push($(this).val());
+        }
     })
     $('.step_content').each(function() {
-        step_content.push($(this).val());
+        if ($(this).html() == '') {
+            step_content.push('-');
+        } else {
+            step_content.push($(this).html());
+        }
     })
+    $('.gallery_alt').each(function() {
+        let v = $(this).val();
+        if (v == '') {
+            gallery_alt.push('当地風景写真');
+        } else {
+            gallery_alt.push(v);
+        }
+    })
+    if (update) {
+        $.ajax({
+            url: 'api.php?do=service_set',
+            type: 'post',
+            data: {
+                id: $('#id').html(),
+                service: service,
+                times: times,
+                banner: banner_post,
+                index: index_post,
+                intro: intro,
+                number: number,
+                price: price,
+                options: options,
+                step_title: step_title,
+                step_time: step_time,
+                step_content: step_content,
+                step_pic: step_pic_array,
+                gallery: gallery_array,
+                gallery_alt: gallery_alt,
+                remark: remark,
+                hot: hot,
+                enable: enable
+            },
+            success: function(result) {
+                if (result == 'UPDATED') {
+                    la.show_mes('服務項目更新成功');
+                    la.b.click(function() {
+                        la.close_load();
+                    })
+                    // console.log('done');
+                } else {
+                    la.show_mes('服務項目更新失敗');
+                    la.b.click(function() {
+                        la.close_load();
+                    })
+                    console.log('FAIL');
+                    console.log(result);
+                }
+            }
+        })
+    } else {
+        $.ajax({
+            url: 'api.php?do=service_insert',
+            type: 'post',
+            data: {
+                service: service,
+                times: times,
+                banner: banner_post,
+                index: index_post,
+                intro: intro,
+                number: number,
+                price: price,
+                options: options,
+                step_title: step_title,
+                step_time: step_time,
+                step_content: step_content,
+                step_pic: step_pic_array,
+                gallery: gallery_array,
+                gallery_alt: gallery_alt,
+                remark: remark,
+                hot: hot,
+                enable: enable
+            },
+            success: function(result) {
+                if (result == 'INSERTED') {
+                    la.show_mes('服務項目新增成功');
+                    la.b.click(function() {
+                        la.close_load();
+                        go_back();
+                    })
+                    // console.log('done');
+                } else {
+                    la.show_mes('服務項目新增失敗');
+                    la.b.click(function() {
+                        la.close_load();
+                    })
+                    console.log('FAIL');
+                    console.log(result);
+                }
+            }
+        })
+    }
+}
+
+function deleted() {
+    la.l.fadeIn();
+    $.post('api.php?do=service_delete', {
+        id: id
+    }, function(result) {
+        if (result == 'DELETED') {
+            la.show_mes('服務刪除成功');
+            la.b.click(function() {
+                la.close_load();
+                go_back();
+            })
+        } else {
+            la.show_mes('服務刪除失敗啦');
+            la.b.click(function() {
+                la.close_load();
+            })
+        }
+    })
+}
+
+function service_get() {
     $.ajax({
-        url: 'api.php?do=service_insert',
+        url: 'api.php?do=service_get',
         type: 'post',
         data: {
-            service: service,
-            time: time,
-            banner: banner_post,
-            intro: intro,
-            number: number,
-            price: price,
-            options: options,
-            step_title: step_title,
-            step_time: step_time,
-            step_content: step_content,
-            step_pic: step_pic_array,
-            gallery: gallery_array,
-            remark: remark,
-            hot: hot
+            id: id
         },
         success: function(result) {
-            if (result == 'INSERTED') {
-                // la.show_mes('服務項目新增成功');
-                // la.b.click(function() {
-                // la.close_load();
-                // })
-                console.log('done');
-            } else {
-                // la.show_mes('服務項目新增失敗');
-                // la.b.click(function() {
-                // la.close_load();
-                // })
-                console.log('FAIL');
-                console.log(result);
-            }
+            $('body').append(result);
+            let set_data = setTimeout(() => {
+                if ($('#gallery_temp').val() != '' && $('#step_pic_temp').val() != '') {
+                    gallery_array = $('#gallery_temp').val().split('|');
+                    step_pic_array = $('#step_pic_temp').val().split('|');
+                    init();
+                } else {
+                    console.log('no data');
+                    set_data;
+                }
+            }, 100);
         }
     })
 }
 
 function go_back() {
-    document.forms['back'].submit();
+    location.href = 'service_list.php';
 }
 
 (function($) {
@@ -493,21 +709,33 @@ function go_back() {
         preview_height = 380,
         compress_ratio = 0.5,
         img_type = 'png',
-        oldImg = new Image(),
-        file;
-    var myCrop = $('#oldImg').croppie({
-        viewport: {
-            width: crop_width,
-            height: crop_height,
-            type: crop_type,
-        },
-        boundary: {
-            width: preview_width,
-            height: preview_height,
-        },
-    });
+        target = '';
+    var bannerCrop = $('#oldBanner').croppie({
+            viewport: {
+                width: 1100,
+                height: 380,
+                type: crop_type,
+            },
+            boundary: {
+                width: 1100,
+                height: 380,
+            },
+        }),
+        indexCrop = $('#oldIndex').croppie({
+            viewport: {
+                width: 300,
+                height: 300,
+                type: crop_type,
+            },
+            boundary: {
+                width: 300,
+                height: 300,
+            }
+        });
 
     function read_file(input) {
+        var oldImg = new Image(),
+            file;
         if (input.files && input.files[0]) {
             file = input.files[0];
         } else {
@@ -520,11 +748,16 @@ function go_back() {
             reader.onload = function(e) {
                 var oldImgDataUrl = e.target.result;
                 oldImg.src = oldImgDataUrl;
-                myCrop.croppie('bind', {
-                    url: oldImgDataUrl,
-                });
+                if (target == 'banner') {
+                    bannerCrop.croppie('bind', {
+                        url: oldImgDataUrl,
+                    });
+                } else if (target == 'index') {
+                    indexCrop.croppie('bind', {
+                        url: oldImgDataUrl,
+                    });
+                }
             };
-
             reader.readAsDataURL(file);
         } else {
             alert('請上傳正確的圖片檔案');
@@ -532,35 +765,63 @@ function go_back() {
     }
 
     function display_cropImg(src) {
-        var html = `<img id="pic" src="${src}" class="img-fluid"/>`;
-        $('#newImg').html(html);
-        // $('#newImg').css('padding', '25px');
-        $('#banner_post').val(src);
+        var html = `<img src="${src}" class="img-fluid"/>`;
+        if (target == 'banner') {
+            $('#newBanner').html(html);
+            $('#banner_post').val(src);
+        } else if (target == 'index') {
+            $('#newIndex').html(html);
+            $('#index_post').val(src);
+        }
         $("#oldImg_frame").css('display', 'none');
     }
 
     $('#banner').on('change', function() {
         $("#oldImg_frame").css('display', 'flex')
-        $('#oldImg').show();
+        $('#oldIndex').hide();
+        $('#oldBanner').show();
+        target = 'banner';
+        read_file(this);
+    });
+
+    $('#index').on('change', function() {
+        $("#oldImg_frame").css('display', 'flex')
+        $('#oldBanner').hide();
+        $('#oldIndex').show();
+        target = 'index';
         read_file(this);
     });
 
     $('#crop_img').on('click', function() {
-        myCrop.croppie('result', {
-                type: 'canvas',
-                format: img_type,
-                quality: compress_ratio,
-            })
-            .then(function(src) {
-                display_cropImg(src);
-            });
+        if (target == 'banner') {
+            bannerCrop.croppie('result', {
+                    type: 'canvas',
+                    format: img_type,
+                    quality: compress_ratio,
+                })
+                .then(function(src) {
+                    display_cropImg(src);
+                });
+        } else if (target == 'index') {
+            indexCrop.croppie('result', {
+                    type: 'canvas',
+                    format: img_type,
+                    quality: compress_ratio,
+                })
+                .then(function(src) {
+                    display_cropImg(src);
+                });
+        }
+
         $("#oldImg_frame").css('display', 'none')
-        $('#oldImg').hide();
+        $('#oldIBanner').hide();
+        $('#oldIndex').hide();
     });
 
     $('#cancel').on('click', function() {
         $("#oldImg_frame").css('display', 'none')
-        $('#oldImg').hide();
+        $('#oldIBanner').hide();
+        $('#oldIndex').hide();
     })
 })(jQuery);
 </script>

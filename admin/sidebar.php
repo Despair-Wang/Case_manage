@@ -25,7 +25,7 @@ if ($role == 'admin') {
     echo <<<admin
             <li id="calender"><a href="schedule_list.php">出勤管理</a></li>
             <li id="user"><a href="user_list.php">使用者管理</a></li>
-            <li id="subject"><a href="service_create.php">服務項目管理</a></li>
+            <li id="subject"><a href="service_list.php">服務項目管理</a></li>
             admin;
 } else if ($role == 'operator') {
     echo '<li id="calender"><a href="schedule_control.php">出勤管理</a></li>';

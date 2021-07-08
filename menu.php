@@ -16,36 +16,7 @@
                 </li>
                 <li>
                     <a>貸切ツアー</a>
-                    <ul class="sub-menu">
-                        <li><a>北台湾</a>
-                            <ul class="sub-menu">
-                                <li><a href="order-910.html">九份・十分（天燈上げ・滝）</a></li>
-                                <li><a href="order-ieryu.html">野柳＋選べる九份・十分</a></li>
-                                <li><a href="order-night910.html">夜の九份+十分（夕食「海悦楼」）</a></li>
-                                <li><a href="order-ryusan.html">パワースポット巡り</a></li>
-                                <li><a href="order-raumei.html">老梅石槽、北海岸線</a></li>
-                                <li><a href="order-romanhakka.html">新竹＆苗栗下町巡り</a></li>
-                                <li><a href="order-myouri.html">苗栗公館巡り</a></li>
-                            </ul>
-                        </li>
-                        <li><a>中台湾</a>
-                            <ul class="sub-menu">
-                                <li><a href="order-taityuu.html">台中スポット巡り</a></li>
-                            </ul>
-                        </li>
-                        <li><a>東台湾</a>
-                            <ul class="sub-menu">
-                                <li><a href="order-yilan.html">宜蘭日帰りツアー</a></li>
-                            </ul>
-                        </li>
-                        <li><a>南台湾</a>
-                            <ul class="sub-menu">
-                                <li><a href="order-tainan.html">台南半日観光ツアー</a></li>
-                                <li><a href="order-takao.html">高雄半日観光ツアー</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="order-freeplan.html">フリープラン</a></li>
-                        <li><a href="order-kuucou.html">空港送迎チャーター</a></li>
+                    <ul class="sub-menu" id="service_list">
                     </ul>
                 </li>
                 <li>
@@ -69,6 +40,13 @@ $(function() {
             $('nav').addClass('set_trans').removeClass('set_white');
         } else {
             $('nav').addClass('set_white').removeClass('set_trans');
+        }
+    })
+    $.ajax({
+        url: 'admin/api.php?do=get_menu',
+        success: function(result) {
+            $('#service_list').html(result);
+            // console.log(result);
         }
     })
 })

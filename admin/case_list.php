@@ -19,7 +19,7 @@ set_h1('ORDER LIST');
         <div class="container">
             <div class="row">
                 <div class="col-12 d-flex justify-content-end">
-                    <button class="btn case_ctrl w-auto" onclick="location.href='case_create.php'">
+                    <button id="insert" class="btn case_ctrl w-auto">
                         <h4>
                             新增
                         </h4>
@@ -93,6 +93,9 @@ var start, count = 15,
     la = new loading_anime();
 $(function() {
     start = 0;
+    $('#insert').click(function() {
+        location.href = 'case_create.php';
+    })
     $('#prev_b').hide()
     // loading();
     btn_init();

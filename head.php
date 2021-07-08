@@ -7,7 +7,7 @@
 <script src="assets/js/jquery-3.6.0.min.js"></script>
 <script src="assets/js/bootstrap.js"></script>
 <script src="assets/js/blurViewer.js"></script>
-<script src="../assets/js/scrollForever.js"></script>
+<script src="assets/js/scrollForever.js"></script>
 <script type="text/javascript" src="assets/js/gallery.js"></script>
 <!-- CSS -->
 <link rel="stylesheet" href="assets/css/bootstrap.min.css" />

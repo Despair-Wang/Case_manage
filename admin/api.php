@@ -726,8 +726,8 @@ switch ($_GET['do']) {
             foreach ($rows as $row) {
                 echo <<<option
                     <div class="col-12">
-                    <input id="{$row['name']}" type="checkbox" class="options w-auto" value="{$row['name']}">
                     <label for="{$row['name']}">{$row['content']}</label>
+                    <input id="{$row['name']}" type="checkbox" class="options w-auto" value="{$row['name']}">
                     </div>
                     option;
             }
@@ -748,24 +748,25 @@ switch ($_GET['do']) {
         }
         break;
     case 'service_insert':
-        $gallery = '';
+        $gallery = array();
         $price = array();
         $step = array();
         $image_save = array();
         for ($i = 0; $i < count($_POST['number']); $i++) {
-            $temp = $_POST['number'][$i] . '人,' . $_POST['price'][$i] . '元';
+            $temp = $_POST['number'][$i] . ',' . $_POST['price'][$i];
             array_push($price, $temp);
         }
         $price = base64_encode(serialize($price));
         $options = base64_encode(serialize($_POST['options']));
         $sql = "INSERT INTO `service` (`title`,`times`,`introduction`,`prices`,`options`,`hot`,`remark`,`enable`)";
-        $sql .= " VALUES('{$_POST['service']}','{$_POST['time']}','{$_POST['intro']}','{$price}','{$options}',";
-        $sql .= "{$_POST['hot']},'{$_POST['remark']}',1);";
+        $sql .= " VALUES('{$_POST['service']}','{$_POST['times']}','{$_POST['intro']}','{$price}','{$options}',";
+        $sql .= "{$_POST['hot']},'{$_POST['remark']}',{$_POST['enable']});";
         $result = mysqli_query($con, $sql);
+        // echo 'INSERTED';
         if ($result) {
             $sql = "SELECT `id` FROM `service` WHERE `title` = '{$_POST['service']}' ORDER BY `created_at` DESC LIMIT 1;";
             $id = mysqli_fetch_row(mysqli_query($con, $sql))[0];
-            define('SAVE_FOLDER', 'image/' . $id . '/');
+            define('SAVE_FOLDER', '../image/' . $id . '/');
             if (!is_dir(SAVE_FOLDER)) {
                 mkdir(SAVE_FOLDER);
             }
@@ -775,6 +776,12 @@ switch ($_GET['do']) {
             $data = base64_decode($ba);
             $banner = SAVE_FOLDER . uniqid('ban', false) . '.png';
             array_push($image_save, array($banner, $data));
+            $ind = $_POST['index'];
+            $ind = str_replace('data:image/png;base64,', '', $ind);
+            $ind = str_replace(' ', '+', $ind);
+            $data = base64_decode($ind);
+            $index = SAVE_FOLDER . uniqid('index', false) . '.png';
+            array_push($image_save, array($index, $data));
             $type = '';
             foreach ($_POST['gallery'] as $key => $value) {
                 if (strpos($value, 'jpeg') != false) {
@@ -787,6 +794,7 @@ switch ($_GET['do']) {
                 $value = str_replace(' ', '+', $value);
                 $data = base64_decode($value);
                 $file = SAVE_FOLDER . uniqid('gall', false) . '-' . $key . $type;
+                array_push($gallery, $file);
                 array_push($image_save, array($file, $data));
             }
             for ($i = 0; $i < count($_POST['step_title']); $i++) {
@@ -802,13 +810,14 @@ switch ($_GET['do']) {
                 $pic = str_replace(' ', '+', $pic);
                 $data = base64_decode($pic);
                 $file = SAVE_FOLDER . uniqid('step', false) . '-' . $i . $type;
-                $temp = $_POST['step_title'][$i] . ',' . $_POST['step_content'][$i] . ',' . $file;
+                $temp = array($_POST['step_title'][$i], $_POST['step_time'][$i], $_POST['step_content'][$i], $file);
                 array_push($step, $temp);
                 array_push($image_save, array($file, $data));
             }
             $step = base64_encode(serialize($step));
             $gallery = base64_encode(serialize($gallery));
-            $sql = "UPDATE `service` SET `banner` = '{$banner}',`content` = '{$step}',`gallery` = '{$gallery}' WHERE `id` = '{$id}';";
+            $alt = base64_encode(serialize($_POST['gallery_alt']));
+            $sql = "UPDATE `service` SET `banner` = '{$banner}',`content` = '{$step}',`gallery` = '{$gallery}',`alt` = '{$alt}',`indexImage` = '{$index}' WHERE `id` = '{$id}';";
             $result = mysqli_query($con, $sql);
             if ($result) {
                 foreach ($image_save as $value) {
@@ -816,12 +825,299 @@ switch ($_GET['do']) {
                 }
                 echo 'INSERTED';
             } else {
+                echo 'FAIL';
                 echo $result;
-                echo '<br>IS FAIL';
             }
         } else {
+            echo 'FAIL';
             echo $result;
-            echo '<br>IS FAIL';
+        }
+        break;
+    case 'service_show':
+        $sql = "SELECT `service`.*,`remarks`.`content` AS 'rc' FROM `service` LEFT JOIN `remarks` ON `remarks`.`id` = `service`.`remark` WHERE `service`.`id` = '{$_POST['id']}';";
+        // echo $sql;
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            $prices = unserialize(base64_decode($row['prices']));
+            $price = "";
+            $options = unserialize(base64_decode($row['options']));
+            $option = "$('#option > div:first-child').after('";
+            $contents = unserialize(base64_decode($row['content']));
+            $content = "";
+            $galleries = unserialize(base64_decode($row['gallery']));
+            $gallery = "";
+            $gallery2 = "";
+            $alts = unserialize(base64_decode($row['alt']));
+            foreach ($prices as $v) {
+                $v = explode(',', $v);
+                $price .= "<div class=\"row\"><div class=\"col-3\">{$v[0]}人</div><div class=\"col-9\">{$v[1]}元</div></div>";
+            }
+            foreach ($options as $v) {
+                if ($v == 'no_Option') {
+                    $option = "$('#option').parent().hide('";
+                } else {
+                    $sql = "SELECT * FROM `options` WHERE `name` = '{$v}';";
+                    $opt = mysqli_fetch_assoc(mysqli_query($con, $sql));
+                    $option .= "<div class=\"row\"><div class=\"col-12 col-md-6\">{$opt['content']}</div><div class=\"col-12 col-md-6\">{$opt['price']}元</div></div>";
+                }
+            }
+            $option .= "');";
+            foreach ($contents as $v) {
+                $content .= "<div class=\"row step_block\"><div class=\"col-1 step_mark\"><div></div><div></div><div></div></div><div class=\"col-11\"><div class=\"row p-3 mt-4\"><div class=\"col-lg-8\"><h3>{$v[0]}</h3><h4 style=\"display:inline\">{$v[1]}</h4><hr /><h4>{$v[2]}</h4></div><div class=\"col-lg-4 modal-dialog modal-dialog-centered\"><img src=\"../admin/{$v[3]}\" class=\"img-fluid rounded\" /></div></div></div></div>";
+            }
+            for ($i = 0; $i < count($galleries); $i++) {
+                $gallery .= "<li><img class=\"te\" src=\"{$galleries[$i]}\" alt=\"{$alts[$i]}\"></li>";
+                $gallery2 .= "<img class=\"te\" src=\"{$galleries[$i]}\" alt=\"{$alts[$i]}\">";
+
+            }
+            echo <<<info
+                <script>
+                $('#banner').css('background-image','url(admin/{$row['banner']})');
+                $('#service_title').html('{$row['title']}');
+                $('#intro').html('{$row['introduction']}');
+                $('#price').html('{$price}');
+                {$option};
+                $('#service_content').html('{$content}');
+                $('#gallery2').html('{$gallery2}');
+                $('#a1 > ul').html('{$gallery}');
+                $('#remark').html(`{$row['rc']}`);
+                let steps = $('.step_mark');
+                for(let i = 0;i < steps.length;i++){
+                    if(i==0){
+                        $(steps[i]).addClass('bottom_line');
+                    }else if(i==steps.length-1){
+                        $(steps[i]).addClass('top_line');
+                    }else{
+                        $(steps[i]).addClass('top_line bottom_line');
+                    }
+                }
+                </script>
+                info;
+        }
+        break;
+    case 'service_list':
+        $sql = "SELECT `id`,`indexImage`,`title`,`enable` FROM `service` WHERE {$_POST['where']} limit {$_POST['start']},{$_POST['count']};";
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            foreach ($rows as $row) {
+                $enable = ($row['enable']) ? ('開放') : ('關閉');
+                echo <<<info
+                <div class="case_list" onclick="submit('{$row['id']}')">
+                <div class="row list_title">
+                        <div class="col-6 col-md-2">
+                            <div class="list_df">
+                                <h5>{$row['id']}</h5>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-1">
+                            <div class="list_df">
+                                <img src="{$row['indexImage']}" class="img-fluid">
+                            </div>
+                        </div>
+                        <div class="col-5 col-md-7">
+                            <div class="list_df">
+                                <h5>{$row['title']}</h5>
+                            </div>
+                        </div>
+                        <div class="col-7 col-md-2">
+                            <div class="list_df">
+                                <h5>{$enable}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                info;
+            }
+        }
+        break;
+    case 'get_menu':
+        $sql = "SELECT `id`,`title` FROM `service` WHERE `enable` = 1;";
+        $rows = mysqli_fetch_all(mysqli_query($con, $sql));
+        // print_r($rows);
+        foreach ($rows as $row) {
+            echo "<li><a href=\"service.php?id={$row[0]}\">{$row[1]}</a>";
+        }
+        break;
+    case 'service_get':
+        $sql = "SELECT * FROM `service` WHERE `id` = '{$_POST['id']}';";
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            $prices = unserialize(base64_decode($row['prices']));
+            $price = "";
+            $options = unserialize(base64_decode($row['options']));
+            $option = "";
+            $contents = unserialize(base64_decode($row['content']));
+            $content = "";
+            $step_pic_temp = "";
+            $galleries = unserialize(base64_decode($row['gallery']));
+            $gallery = "";
+            $gallery_temp = "";
+            $alts = unserialize(base64_decode($row['alt']));
+            foreach ($prices as $v) {
+                $v = explode(',', $v);
+                $price .= "<div class=\"row\"><div class=\"col-9 col-md-4\"><input class=\"number\" type=\"text\" value=\"{$v[0]}\"></div><div class=\"col-3 col-md-2\"><span>人</span></div><div class=\"col-9 col-md-4\"><input class=\"price\" type=\"number\" value={$v[1]} min=\"0\"></div><div class=\"col-3 col-md-2\"><span>元</span></div></div>";
+            }
+            foreach ($options as $v) {
+                if ($v != 'no_Option') {
+                    $option .= "$('input[value={$v}]').attr('checked','true');\n";
+                    $option .= "$('input[value={$v}]').next().removeClass('lcs_off').addClass('lcs_on');\n";
+                }
+            }
+            $content_count = 1;
+            foreach ($contents as $v) {
+                $content .= "<div class=\"row\"><div class=\"col-12 col-md-8\"><label>地點名稱${content_count}</label><input class=\"step_title\" type=\"text\" value=\"$v[0]\"><label>時長</label><input class=\"step_time\" type=\"text\" value=\"$v[1]\"><label>地點簡介</label><div class=\"textarea step_content\" contenteditable=\"true\" placeholder=\"請輸入地點簡介\">$v[2]</div></div><div class=\"col-12 col-md-4\"><label>相關圖片</label><div class=\"over_hide\"><img src=\"{$v[3]}\" class=\"img-fluid\"></div><input id=\"step_pic-${content_count}\" class=\"step_pic\" type=\"file\"></div></div><hr style=\"border-top: 1px solid #999;\">";
+                $content_count++;
+                $step_pic_temp .= $v[3];
+                $step_pic_temp .= '|';
+            }
+            $gallery_count = 1;
+            for ($i = 0; $i < count($galleries); $i++) {
+                $gallery .= "<div class=\"row mb-2\"><div class=\"col-12 col-md-5\"><div class=\"over_hide\"><img src=\"{$galleries[$i]}\" class=\"img-fluid\"></div><input id=\"gallery-${gallery_count}\" class=\"gallery\" type=\"file\"><label>請輸入圖片說明</label><input class=\"gallery_alt\" type=\"text\" value=\"{$alts[$i]}\"></div></div>";
+                $gallery_temp .= $galleries[$i];
+                if ($i != count($galleries) - 1) {
+                    $gallery_temp .= '|';
+                }
+            }
+            $hot = ($row['hot']) ? ("$('#hot').attr('checked','true');") . ("$('#hot').next().removeClass('lcs_off').addClass('lcs_on');") : ('');
+            $enable = ($row['enable']) ? ("$('#enable').attr('checked','true');") . ("$('#enable').next().removeClass('lcs_off').addClass('lcs_on');") : ('');
+            $step_pic_temp = substr($step_pic_temp, 0, -1);
+            echo <<<info
+                    <script>
+                    $(function(){
+                        $('#id').html('{$row['id']}');
+                        $('#service').val('{$row['title']}');
+                        $('#times').val('{$row['times']}');
+                        $('#newBanner').html('<img src="{$row['banner']}" class="img-fluid">');
+                        $('#banner_post').val('{$row['banner']}');
+                        $('#newIndex').html('<img src="{$row['indexImage']}" class="img-fluid">');
+                        $('#index_post').val('{$row['indexImage']}');
+                        $('#intro').html('{$row['introduction']}');
+                        $('#price').html('{$price}');
+                        $('#service_content').html('{$content}');
+                        $('#gallery').html('{$gallery}');
+                        {$option}
+                        $('#remark').find('option[value={$row['remark']}]').attr('selected','true');
+                        {$hot}
+                        {$enable}
+                        $('#gallery_temp').val('{$gallery_temp}');
+                        $('#step_pic_temp').val('{$step_pic_temp}');
+                    })
+                    </script>
+                info;
+        } else {
+            echo 'FAIL';
+            echo $result;
+        }
+        break;
+    case 'service_set':
+        $gallery = array();
+        $prices = array();
+        $step = array();
+        $image_save = array();
+        $id = $_POST['id'];
+        for ($i = 0; $i < count($_POST['number']); $i++) {
+            $temp = $_POST['number'][$i] . ',' . $_POST['price'][$i];
+            array_push($prices, $temp);
+        }
+        $prices = base64_encode(serialize($prices));
+        $options = base64_encode(serialize($_POST['options']));
+        define('SAVE_FOLDER', '../image/' . $id . '/');
+        if (!is_dir(SAVE_FOLDER)) {
+            mkdir(SAVE_FOLDER);
+        }
+        $data_check = "data";
+        $banner = $_POST['banner'];
+        if (strpos($banner, $data_check) !== false) {
+            $banner = str_replace('data:image/png;base64,', '', $banner);
+            $banner = str_replace(' ', '+', $banner);
+            $data = base64_decode($banner);
+            $banner = SAVE_FOLDER . uniqid('ban', false) . '.png';
+            array_push($image_save, array($banner, $data));
+        }
+        $index = $_POST['index'];
+        if (strpos($index, $data_check) !== false) {
+            $index = str_replace('data:image/png;base64,', '', $index);
+            $index = str_replace(' ', '+', $index);
+            $data = base64_decode($index);
+            $index = SAVE_FOLDER . uniqid('index', false) . '.png';
+            array_push($image_save, array($index, $data));
+        }
+        $type = '';
+        foreach ($_POST['gallery'] as $key => $value) {
+            if (strpos($value, $data_check) !== false) {
+                if (strpos($value, 'jpeg') != false) {
+                    $value = str_replace('data:image/jpeg;base64,', '', $value);
+                    $type = '.jpeg';
+                } elseif (strpos($value, 'png') != false) {
+                    $value = str_replace('data:image/png;base64,', '', $value);
+                    $type = '.png';
+                }
+                $value = str_replace(' ', '+', $value);
+                $data = base64_decode($value);
+                $value = SAVE_FOLDER . uniqid('gall', false) . '-' . $key . $type;
+                array_push($image_save, array($value, $data));
+            }
+            array_push($gallery, $value);
+        }
+        for ($i = 0; $i < count($_POST['step_title']); $i++) {
+            $temp = '';
+            $pic = $_POST['step_pic'][$i];
+            if (strpos($pic, $data_check) !== false) {
+                if (strpos($pic, 'jpeg') != false) {
+                    $pic = str_replace('data:image/jpeg;base64,', '', $pic);
+                    $type = '.jpeg';
+                } elseif (strpos($pic, 'png') != false) {
+                    $pic = str_replace('data:image/png;base64,', '', $pic);
+                    $type = '.png';
+                }
+                $pic = str_replace(' ', '+', $pic);
+                $data = base64_decode($pic);
+                $pic = SAVE_FOLDER . uniqid('step', false) . '-' . $i . $type;
+                array_push($image_save, array($pic, $data));
+            }
+            $temp = array($_POST['step_title'][$i], $_POST['step_time'][$i], $_POST['step_content'][$i], $pic);
+            array_push($step, $temp);
+        }
+        $step = base64_encode(serialize($step));
+        $gallery = base64_encode(serialize($gallery));
+        $alt = base64_encode(serialize($_POST['gallery_alt']));
+        $sql = "UPDATE `service` SET `title` = '{$_POST['service']}',";
+        $sql .= "`times`= {$_POST['times']},";
+        $sql .= "`banner` = '{$banner}',";
+        $sql .= "`indexImage` = '{$index}',";
+        $sql .= "`introduction` = '{$_POST['intro']}',";
+        $sql .= "`prices` = '{$prices}',";
+        $sql .= "`options` = '{$options}',";
+        $sql .= "`content` = '{$step}',";
+        $sql .= "`gallery` = '{$gallery}',";
+        $sql .= "`alt` = '{$alt}',";
+        $sql .= "`remark` = {$_POST['remark']},";
+        $sql .= "`hot` = {$_POST['hot']},";
+        $sql .= "`enable` = {$_POST['enable']} ";
+        $sql .= "WHERE `id` = '{$id}';";
+        // echo $sql;
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            foreach ($image_save as $value) {
+                file_put_contents($value[0], $value[1]);
+            }
+            echo 'UPDATED';
+        } else {
+            echo 'FAIL';
+            echo $result;
+        }
+        break;
+    case 'service_delete':
+        $sql = "DELETE FROM `service` WHERE `id` = '{$_POST['id']}';";
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            echo 'DELETED';
+        } else {
+            echo 'FAIL';
+            echo $result;
         }
         break;
     default:

@@ -864,10 +864,10 @@ require_once "menu.php";
 
             <!-- InstanceEndEditable -->
         </div>
-        <?php
+    </div>
+    <?php
 require_once 'footer.php';
 ?>
-    </div>
 </body>
 
 <!-- InstanceEnd -->

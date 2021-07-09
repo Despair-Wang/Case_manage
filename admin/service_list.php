@@ -18,7 +18,7 @@ set_h1("SERVICE LIST");
         <div class="container">
             <div class="row">
                 <div class="col-12 d-flex justify-content-end">
-                    <button id="insert" class="btn case_ctrl w-auto" onclick="location.href='case_create.php'">
+                    <button id="insert" class="btn case_ctrl w-auto">
                         <h4>
                             新增
                         </h4>

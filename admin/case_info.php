@@ -337,6 +337,7 @@ function show_reply() {
                 let content = result.substr(2);
                 $('#content_block').html(content);
                 star_light(score);
+                $('#reply_block').show();
             } else {
                 console.log('not reply yet');
                 if (role == 'user') {
@@ -348,6 +349,7 @@ function show_reply() {
                         });
                     }
                     star_light(0);
+                    $('#reply_block').show();
                 } else {
                     $('#reply_block').hide();
                 }

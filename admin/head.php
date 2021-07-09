@@ -41,3 +41,5 @@ function set_title($title)
 <link rel="stylesheet" href="css/croppie.css" />
 <script type="text/javascript" src="js/a_core.js"></script>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<script src="js/lc_switch.js" type="text/javascript"></script>
+<link rel="stylesheet" href="css/lc_switch.css" />

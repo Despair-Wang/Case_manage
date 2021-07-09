@@ -177,25 +177,23 @@ require_once 'menu.php';
                         </div>
                     </div>
                     <!-- オプション-->
-                    <div class="row my-3">
-                        <div class="col-md-8 offset-md-2 col-12" style="font-size: 2vmin;">
-                            <h2>オプション</h2>
-                            <h4>※道路交通法の規定により、4歳未満の幼児を乗車させる場合には、幼児用補助装置（チャイルドシート）の使用が義務づけられています。<br />
-                                もしご利用される場合はお知らせ下さい。また同時にお子様の年齢もご確認させてくださいませ。</h4>
-                            <div class="table" id="option">
-                                <div class="row">
-                                    <div class="col-12 col-md-6">オプション</div>
-                                    <div class="col-12 col-md-6">値段</div>
+                    <div class="col-md-8 offset-md-2 col-12 my-5" style="font-size: 2vmin;">
+                        <h2>オプション</h2>
+                        <h4>※道路交通法の規定により、4歳未満の幼児を乗車させる場合には、幼児用補助装置（チャイルドシート）の使用が義務づけられています。<br />
+                            もしご利用される場合はお知らせ下さい。また同時にお子様の年齢もご確認させてくださいませ。</h4>
+                        <div class="table" id="option">
+                            <div class="row">
+                                <div class="col-12 col-md-6">オプション</div>
+                                <div class="col-12 col-md-6">値段</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6>※現在の日本円の値段は2018/4/20の為替レートで計算してます。</h6>
                                 </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h6>※現在の日本円の値段は2018/4/20の為替レートで計算してます。</h6>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h6>時期により、為替レートが変わりますので、決算当日の金額の相違の可能性がございます。ご了承ください。</h6>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6>時期により、為替レートが変わりますので、決算当日の金額の相違の可能性がございます。ご了承ください。</h6>
                                 </div>
                             </div>
                         </div>

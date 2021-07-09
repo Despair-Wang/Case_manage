@@ -51,7 +51,7 @@ require_once "writen_item.php";
                     </div>
                 </form>
                 <form name="back" action="user_info.php" method="POST">
-                    <input type="hidden" name="row_id" id="row_id_back">
+                    <input type="hidden" name="serial" id="serial_back">
                 </form>
             </div>
         </div>
@@ -81,7 +81,11 @@ require_once "footer.php";
 
 <script>
 <?php
-echo "\nvar row_id = {$_POST['row_id']};\n"
+if (isset($_POST['serial'])) {
+    echo "var serial = '{$_POST['serial']}';\n";
+} else if (isset($_SESSION['serial'])) {
+    echo "var serial = '{$_SESSION['serial']}';\n";
+}
 ?>
 $(document).ready(function() {
     $("input:radio").addClass('cur_p');
@@ -101,8 +105,8 @@ var la = new loading_anime();
 function loading() {
     la.l.fadeIn();
     $.post(
-        'api.php?do=update_get', {
-            row_id
+        'api.php?do=user_get', {
+            serial
         },
         function(result) {
             la.l.hide();
@@ -142,7 +146,7 @@ function submit() {
     // console.log("data is " + data);
     la.l.fadeIn();
     $.post(
-        'api.php?do=update_set',
+        'api.php?do=user_set',
         data,
         function(result) {
             if (result == 'UPDATED') {

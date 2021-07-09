@@ -31,7 +31,6 @@ var loading_anime = function () {
         r.hide();
         mes.html(message);
         c.slideToggle();
-
     }
 
     this.close_load = function() {

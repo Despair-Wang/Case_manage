@@ -6,8 +6,6 @@
 require_once "head.php";
 ?>
     <script src="js/croppie.js"></script>
-    <script src="js/lc_switch.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="css/lc_switch.css" />
 </head>
 
 <body>
@@ -124,7 +122,7 @@ if (isset($_POST['serial'])) {
                                             <span>人</span>
                                         </div>
                                         <div class="col-9 col-md-4">
-                                            <input class="price" type="number" min="0">
+                                            <input class="price" type="number">
                                         </div>
                                         <div class="col-3 col-md-2">
                                             <span>元</span>
@@ -468,6 +466,7 @@ function add_gallery() {
     init();
 }
 
+
 function submit() {
     la.l.fadeIn();
     let service = $('#service').val(),
@@ -484,48 +483,65 @@ function submit() {
         gallery_alt = new Array(),
         remark = $('#remark').val(),
         hot = $('#hot').prop('checked'),
-        enable = $('#enable').prop('checked');
-    la.b.click(function() {
-        la.close_load();
-    })
+        enable = $('#enable').prop('checked'),
+        input_error = false,
+        error_message = '';
+
     if (service == '') {
-        la.show_mes('請輸入服務項目名稱');
-        return;
+        error_message = '請輸入服務項目名稱';
+        input_error = true;
+
     }
     if (banner_post == '') {
-        la.show_mes('請選擇一張橫幅，不然前端會怨你');
-        return;
+        error_message = '請選擇一張橫幅，不然前端會怨你';
+        input_error = true;
     }
+
     if (index_post == '') {
-        la.show_mes('請選擇一張形象圖，不然前端會怨你');
-        return;
+        error_message = '請選擇一張形象圖，不然前端會怨你';
+        input_error = true;
     }
     if (intro == '') {
-        la.show_mes('請輸入服務簡介，不然企劃會唸你');
-        return;
+        error_message = '請輸入服務簡介，不然企劃會唸你';
+        input_error = true;
     }
     if (gallery_array.length < 4) {
-        la.show_mes('請至少選擇四張相關圖片，不然前端會怨你');
-        return;
+        error_message = '請至少選擇四張相關圖片，不然前端會怨你';
+        input_error = true;
     }
 
     let count = 0;
     $('.number').each(function() {
-        if (count == 0 && $(this).val() == '') {
-            la.show_mes('請至少輸入一組人數');
-            return;
-        } else if ($(this).val() != '') {
+        let n_check = $(this).val().replace('~', '');
+        n_check = parseInt(n_check);
+        if (count == 0 && isNaN(n_check)) {
+            error_message = '請至少輸入一組人數';
+            input_error = true;
+        } else if (isNaN(n_check)) {
+            error_message = '請輸入正確的數字';
+            input_error = true;
+        } else if (n_check < 0) {
+            error_message = '請輸入正整數';
+            input_error = true;
+        } else {
             number.push($(this).val());
             count++;
         }
     })
     count = 0;
     $('.price').each(function() {
-        if (count == 0 && $(this).val() == '') {
-            la.show_mes('請至少輸入一組價格');
-            return;
-        } else if ($(this).val() != '') {
-            price.push($(this).val());
+        let p_check = parseInt($(this).val());
+        if (count == 0 && isNaN(p_check)) {
+            error_message = '請至少輸入一組價格';
+            input_error = true;
+        } else if (isNaN(p_check)) {
+            error_message = '請輸入正確數字';
+            input_error = true;
+        } else if (p_check < 0) {
+            error_message = '請輸入正整數';
+            input_error = true;
+        } else {
+            price.push(p_check);
             count++;
         }
     })
@@ -540,7 +556,8 @@ function submit() {
     count = 0;
     $('.step_title').each(function() {
         if (count == 0 && $(this).val() == '') {
-            la.show_mes('請至少輸入一個行程標題');
+            error_message = '請至少輸入一個行程標題';
+            input_error = true;
             return;
         } else if ($(this).val() != '') {
             step_title.push($(this).val());
@@ -558,7 +575,7 @@ function submit() {
         if ($(this).html() == '') {
             step_content.push('-');
         } else {
-            step_content.push($(this).html());
+            step_content.push($(this).html().replace(' ', ''));
         }
     })
     $('.gallery_alt').each(function() {
@@ -569,6 +586,15 @@ function submit() {
             gallery_alt.push(v);
         }
     })
+
+    if (input_error) {
+        la.show_mes(error_message);
+        la.b.click(function() {
+            la.close_load();
+        })
+        return;
+    }
+
     if (update) {
         $.ajax({
             url: 'api.php?do=service_set',
@@ -598,14 +624,12 @@ function submit() {
                     la.show_mes('服務項目更新成功');
                     la.b.click(function() {
                         la.close_load();
+                        go_back();
                     })
                     // console.log('done');
                 } else {
                     la.show_mes('服務項目更新失敗');
-                    la.b.click(function() {
-                        la.close_load();
-                    })
-                    console.log('FAIL');
+                    console.log('FRONT FAIL');
                     console.log(result);
                 }
             }
@@ -646,7 +670,7 @@ function submit() {
                     la.b.click(function() {
                         la.close_load();
                     })
-                    console.log('FAIL');
+                    console.log('FRONT FAIL');
                     console.log(result);
                 }
             }
@@ -655,23 +679,25 @@ function submit() {
 }
 
 function deleted() {
-    la.l.fadeIn();
-    $.post('api.php?do=service_delete', {
-        id: id
-    }, function(result) {
-        if (result == 'DELETED') {
-            la.show_mes('服務刪除成功');
-            la.b.click(function() {
-                la.close_load();
-                go_back();
-            })
-        } else {
-            la.show_mes('服務刪除失敗啦');
-            la.b.click(function() {
-                la.close_load();
-            })
-        }
-    })
+    if (confirm("確定要刪除本筆資料？")) {
+        la.l.fadeIn();
+        $.post('api.php?do=service_delete', {
+            id: id
+        }, function(result) {
+            if (result == 'DELETED') {
+                la.show_mes('服務刪除成功');
+                la.b.click(function() {
+                    la.close_load();
+                    go_back();
+                })
+            } else {
+                la.show_mes('服務刪除失敗啦');
+                la.b.click(function() {
+                    la.close_load();
+                })
+            }
+        })
+    }
 }
 
 function service_get() {

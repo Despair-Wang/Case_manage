@@ -49,7 +49,8 @@ if (isset($_POST['serial'])) {
                             </div>
                             <div class="col-7">
                                 <h5>
-                                    <input type="text" name="service" id="service">
+                                    <select name="service" id="service">
+                                    </select>
                                 </h5>
                             </div>
                         </div>
@@ -119,14 +120,6 @@ if (isset($_POST['serial'])) {
                             <div class="col-7">
                                 <h5>
                                     <select name="number" id="number">
-                                        <option value="1">1人</option>
-                                        <option value="2">2人</option>
-                                        <option value="3">3人</option>
-                                        <option value="4">4人</option>
-                                        <option value="5">5人</option>
-                                        <option value="6">6人</option>
-                                        <option value="7">7人</option>
-                                        <option value="8">8人</option>
                                     </select>
                                 </h5>
                             </div>
@@ -221,15 +214,7 @@ if (isset($_POST['serial'])) {
                             <div class="col-12">
                                 <h5>額外服務</h5>
                             </div>
-                            <div class="col-12">
-                                <h5>
-                                    <input type="checkbox" name="option1" id="option1">
-                                    <label class="cur_p" for="option1">租用兒童安全座椅</label>
-                                </h5>
-                                <h5>
-                                    <input type="checkbox" name="option2" id="option2">
-                                    <label class="cur_p" for="option2">攜帶輪椅</label>
-                                </h5>
+                            <div id="options" class="col-12">
                             </div>
                         </div>
                     </div>
@@ -282,17 +267,51 @@ if (isset($_POST['serial'])) {
     echo <<<upd
     serial = '{$_POST['serial']}';
     update = true;
-    get_date("{$_POST['serial']}");
     upd;
 }
 ?>
-$('document').ready(function() {
+$(function() {
+    set_time();
+    get_service();
+    get_options();
     if (update) {
         $('#submit').children().html('更新');
+        get_date(serial);
+        $('#serial_block').show();
+    } else {
+        $('#serial_block').hide();
     }
-    set_time();
     $('.row').addClass('mb-2');
 });
+
+function get_service() {
+    $.ajax({
+        url: 'api.php?do=case_service_get',
+        type: 'post',
+        success: function(result) {
+            $('#service').html(result);
+            $('#service').change(function() {
+                get_limit_number($(this).val());
+            })
+        }
+    })
+}
+
+function get_limit_number(id) {
+    $.ajax({
+        url: 'api.php?do=people_number_limit',
+        type: 'post',
+        data: {
+            id: id
+        },
+        success: function(result) {
+            $('#number').html('');
+            for (let i = 1; i <= parseInt(result); i++) {
+                $('#number').append(`<option value=${i}>${i}人</option>`);
+            }
+        }
+    })
+}
 
 function get_date(id) {
     la.l.fadeIn();
@@ -305,17 +324,68 @@ function get_date(id) {
         success: function(result) {
             la.l.hide();
             $('body').append(result);
+            setTimeout(() => {
+                get_limit_number($('#service').val());
+            }, 350);
+        }
+    })
+}
+
+function get_options() {
+    $.ajax({
+        url: 'api.php?do=options_get',
+        type: 'post',
+        success: function(result) {
+            $('#options').html(result);
+            $('input[type=checkbox]').lc_switch();
         }
     })
 }
 
 function submit() {
     la.l.fadeIn();
-    let data = $(':input').serialize();
+    let options = new Array(),
+        serial = $('#serial').html(),
+        service = $('#service').val(),
+        name = $('#name').val(),
+        tel = $('#tel').val(),
+        mail = $('#mail').val(),
+        number = $('#number').val(),
+        car_type = $('#car_type').val(),
+        date1 = $('#date1').val(),
+        time1 = $('#time1').val(),
+        date2 = $('#date2').val(),
+        time2 = $('#time2').val(),
+        date3 = $('#date3').val(),
+        time3 = $('#time3').val(),
+        remark = $('#remark').val(),
+        status = $('#status').val();
+    $('.options').each(function() {
+        options.push($(this).val() + '=' + $(this).prop('checked'));
+    })
     if (update) {
-        $.post('api.php?do=case_update_set',
-            data,
-            function(result) {
+        $.ajax({
+            url: 'api.php?do=case_update_set',
+            type: 'post',
+            data: {
+                serial: serial,
+                service: service,
+                name: name,
+                tel: tel,
+                mail: mail,
+                number: number,
+                car_type: car_type,
+                date1: date1,
+                time1: time1,
+                date2: date2,
+                time2: time2,
+                date3: date3,
+                time3: time3,
+                options: options,
+                remark: remark,
+                status: status
+            },
+            success: function(result) {
                 if (result == 'UPDATED') {
                     la.show_mes('案件更新成功');
                     la.b.click(function() {
@@ -330,11 +400,28 @@ function submit() {
                     })
                 }
             }
-        )
+        })
     } else {
-        $.post('api.php?do=case_insert',
-            data,
-            function(result) {
+        $.ajax({
+            url: 'api.php?do=case_insert',
+            type: 'post',
+            data: {
+                service: service,
+                name: name,
+                tel: tel,
+                mail: mail,
+                number: number,
+                car_type: car_type,
+                date1: date1,
+                time1: time1,
+                date2: date2,
+                time2: time2,
+                date3: date3,
+                time3: time3,
+                options: options,
+                remark: remark
+            },
+            success: function(result) {
                 if (result == 'INSERTED') {
                     la.show_mes('案件新增成功');
                     la.b.click(function() {
@@ -348,7 +435,8 @@ function submit() {
                         la.close_load();
                     })
                 }
-            })
+            }
+        })
     }
 }
 

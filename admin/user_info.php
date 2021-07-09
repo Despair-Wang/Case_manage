@@ -20,7 +20,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
 ?>
         <!-- 主題內文 -->
         <div class="container">
-            <div id="back" onclick="location.href='user_list.php'">
+            <div id="back">
                 <div>BACK</div>
                 <div></div>
                 <div></div>
@@ -159,15 +159,23 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
 require_once "footer.php";
 ?>
     <script>
+    var myself = false;
     <?php
 if (isset($_POST['serial'])) {
     echo "let serial = '{$_POST['serial']}';\n";
 } else {
     echo "let serial = '{$_SESSION['serial']}';\n";
+    echo "myself = true;\n";
 }
-echo "let user_serial = '{$_SESSION['serial']}';\n";
+if ($_SESSION['role'] != 'admin') {
+    echo "myself = true;\n";
+}
+
 ?>
-    $(document).ready(function() {
+    $(function() {
+        $('#back').click(function() {
+            go_back();
+        })
         loading();
     })
     var la = new loading_anime();
@@ -220,6 +228,14 @@ echo "let user_serial = '{$_SESSION['serial']}';\n";
         let f = document.forms[0];
         f.serial.value = serial;
         f.submit();
+    }
+
+    function go_back() {
+        if (myself) {
+            location.href = 'home.php';
+        } else {
+            location.href = 'user_list.php';
+        }
     }
     </script>
 </body>

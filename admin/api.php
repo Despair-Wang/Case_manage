@@ -76,9 +76,10 @@ switch ($_GET['do']) {
     case 'user_info':
         $serial = $_POST['serial'];
         $sql = "SELECT * FROM `users` WHERE `serial` = '{$serial}';";
+        echo $sql;
         $result = mysqli_query($con, $sql);
-        $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        foreach ($rows as $row) {
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
             if ($row['role'] == 'admin') {$role = "管理者";} else if ($row['role'] == 'operator') {$role = "司機";} else { $role = "使用者";}
             ;
             if ($row['sex'] == 'M') {$sex = "男";} else if ($row['sex'] == 'F') {$sex = "女";} else { $sex = "其他";}
@@ -92,25 +93,26 @@ switch ($_GET['do']) {
                 <script>
                 $(document).ready(function(){
                     $('#pic').attr('src','{$row['image']}');
-                    $('#name').html('{$row['name']}');
-                    $('#nickname').html('{$row['nickname']}');
-                    $('#sex').html('{$sex}');
-                    $('#identity').html('{$row['identity']}');
-                    $('#car_type').html('{$row['car_type']}');
-                    $('#mail').html('{$row['mail']}');
-                    $('#tel').html('{$row['tel']}');
-                    $('#remark').html('{$row['remark']}');
-                    $('#enable').html('$enable');
-                    $('#role').val('{$row['role']}');
-                    {$oper_only}
-                });
+                            $('#name').html('{$row['name']}');
+                            $('#nickname').html('{$row['nickname']}');
+                            $('#sex').html('{$sex}');
+                            $('#identity').html('{$row['identity']}');
+                            $('#car_type').html('{$row['car_type']}');
+                            $('#mail').html('{$row['mail']}');
+                            $('#tel').html('{$row['tel']}');
+                            $('#remark').html('{$row['remark']}');
+                            $('#enable').html('$enable');
+                            $('#role').val('{$row['role']}');
+                            {$oper_only}
+                        });
                 </script>
                 info;
+        } else {
+            echo $result;
         }
         break;
     case 'user_delete':
-        $serial = $_POST['serial'];
-        $sql = "DELETE FROM `users` WHERE `serial` = '{$serial}';";
+        $sql = "DELETE FROM `users` WHERE `serial` = '{$_POST['serial']}';";
         $result = mysqli_query($con, $sql);
         if ($result) {
             echo "DELETED";
@@ -119,16 +121,16 @@ switch ($_GET['do']) {
         }
         break;
 
-    case 'update_get':
-        $serial = $_POST['serial'];
-        $sql = "SELECT * FROM `users` WHERE `serial` = {$_POST['serial']};";
+    case 'user_get':
+        $sql = "SELECT * FROM `users` WHERE `serial` = '{$_POST['serial']}';";
         $result = mysqli_query($con, $sql);
-        $row = mysqli_fetch_row($result);
-        $oper_only = "";
-        if ($row['role'] == 'operator') {
-            $oper_only = "$('.oper_only').removeClass('oper_only');";
-        }
-        echo <<<info
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            $oper_only = "";
+            if ($row['role'] == 'operator') {
+                $oper_only = "$('.oper_only').removeClass('oper_only');";
+            }
+            echo <<<info
                 <script>
                 $(document).ready(function(){
                     $('#serial').val('{$row['serial']}');
@@ -152,8 +154,11 @@ switch ($_GET['do']) {
                 });
                 </script>
                 info;
+        } else {
+            echo $result;
+        }
         break;
-    case 'update_set':
+    case 'user_set':
         define('UPLOAD_PATH', 'img/');
         if ($_POST['img'] == "") {
             $img_name = "default";
@@ -181,10 +186,16 @@ switch ($_GET['do']) {
         $serial = $_POST['serial'];
         $sql = "UPDATE `users` set `name`= '{$_POST['name']}',`nickname`= '{$_POST['nickname']}',";
         $sql .= "`sex`= '{$_POST['sex']}',`pw`= '{$_POST['pw']}',`identity`= '{$_POST['identity']}',";
-        $sql .= "`car_type`= '{$_POST['car_type']}',`mail`= '{$_POST['mail']}',`tel`= '{$_POST['tel']}',";
-        $sql .= "`remark`= '{$_POST['remark']}',`image`= '{$file}',`enable`= '{$_POST['enable']}',";
-        $sql .= "`role`= '{$role}' ";
-        $sql .= "WHERE `serial` = {$_POST['serial']};";
+        $sql .= "`car_type`= '{$_POST['car_type']}',`mail`= '{$_POST['mail']}',`tel`= '{$_POST['tel']}'";
+        $sql .= ",`image`= '{$file}'";
+        if (isset($_POST['remark'])) {
+            $sql .= ",`remark`= '{$_POST['remark']}'";
+        }
+        if (isset($_POST['enable'])) {
+            $sql .= ",`enable`= '{$_POST['enable']}'";
+        }
+        $sql .= ",`role`= '{$role}' ";
+        $sql .= "WHERE `serial` = '{$_POST['serial']}';";
         $result = mysqli_query($con, $sql);
 
         if ($result) {
@@ -193,7 +204,7 @@ switch ($_GET['do']) {
                 $result = file_put_contents($file, $data);
             }
         } else {
-            echo "FAIL";
+            echo "FAIL\n";
             echo $sql;
         }
 
@@ -251,7 +262,7 @@ switch ($_GET['do']) {
         // return count($rows);
         break;
     case 'case_list':
-        $sql = "SELECT `serial`,`day1_at`,`service`,`name`,`status`,`created_at`,`status`.`content` AS `status` FROM `orders` JOIN `status` ON `orders`.`status` = `status`.`title` WHERE {$_POST['where']} limit {$_POST['start']},{$_POST['count']};";
+        $sql = "SELECT `serial`,`day1_at`,`service`,`name`,`status`,`orders`.`created_at`,`status`.`content` AS `status` ,`service`.`title` AS `service` FROM `orders` LEFT JOIN `status` ON `orders`.`status` = `status`.`title` LEFT JOIN `service` ON `orders`.`service` = `service`.`id` WHERE {$_POST['where']} limit {$_POST['start']},{$_POST['count']};";
         // echo $sql;
         $result = mysqli_query($con, $sql);
         $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -281,7 +292,7 @@ switch ($_GET['do']) {
     case 'case_info':
         $serial = $_POST['serial'];
         // $sql = "SELECT `orders`.*, `users`.`name` AS `staff` FROM `orders` JOIN `users` ON `orders`.`staff` = `users`.`serial` WHERE `orders`.`serial` = '{$serial}';";
-        $sql = "SELECT `orders`.*,`status`.`content` AS `status`, `users`.`name` AS `staff` FROM `orders` LEFT JOIN `users` ON `orders`.`staff` = `users`.`serial` JOIN `status` ON `status`.`title` = `orders`.`status` WHERE `orders`.`serial` = '{$serial}';";
+        $sql = "SELECT `orders`.*,`status`.`content` AS `status`, `users`.`name` AS `staff`, `service`.`title` AS `service` FROM `orders` LEFT JOIN `users` ON `orders`.`staff` = `users`.`serial` JOIN `status` ON `status`.`title` = `orders`.`status` LEFT JOIN `service` on `orders`.`service` = `service`.`id` WHERE `orders`.`serial` = '{$serial}';";
         // echo $sql;
         $result = mysqli_query($con, $sql);
         if ($result) {
@@ -292,7 +303,7 @@ switch ($_GET['do']) {
                 $can_reply = '$("#reply_block").show();';
             }
             $option = '';
-            $op_rs = explode(',', $row['option']);
+            $op_rs = explode(',', $row['options']);
             foreach ($op_rs as $op_r) {
                 $val = explode('=', $op_r);
                 $option .= set_option($val[0], $val[1]);
@@ -335,11 +346,16 @@ switch ($_GET['do']) {
         $day1 = date('Y-m-d H:i:s', strtotime($_POST['date1'] . " " . $_POST['time1']));
         $day2 = date('Y-m-d H:i:s', strtotime($_POST['date2'] . " " . $_POST['time2']));
         $day3 = date('Y-m-d H:i:s', strtotime($_POST['date3'] . " " . $_POST['time3']));
-        $opt1 = (isset($_POST['option1'])) ? ('option1=true') : ('option1=false');
-        $opt2 = (isset($_POST['option2'])) ? ('option2=true') : ('option2=false');
-        $option = $opt1 . ',' . $opt2;
-        $sql = "insert into `orders` (`service`,`name`,`tel`,`mail`,`number`,`car_type`,`day1_at`,`day2_at`,`day3_at`,`option`,`remark`,`status`) ";
-        $sql .= "values('{$_POST['service']}','{$_POST['name']}','{$_POST['tel']}','{$_POST['mail']}',{$_POST['number']},'{$_POST['car_type']}','{$day1}','{$day2}','{$day3}','{$option}','{$_POST['remark']}','ready');";
+        $options = '';
+        $option = $_POST['options'];
+        for ($i = 0; $i < count($option); $i++) {
+            $options .= $option[$i];
+            if ($i != count($option) - 1) {
+                $options .= ',';
+            }
+        }
+        $sql = "insert into `orders` (`service`,`name`,`tel`,`mail`,`number`,`car_type`,`day1_at`,`day2_at`,`day3_at`,`options`,`remark`,`status`) ";
+        $sql .= "values('{$_POST['service']}','{$_POST['name']}','{$_POST['tel']}','{$_POST['mail']}',{$_POST['number']},'{$_POST['car_type']}','{$day1}','{$day2}','{$day3}','{$options}','{$_POST['remark']}','ready');";
         // echo $sql;
         $result = mysqli_query($con, $sql);
         if ($result) {
@@ -362,11 +378,12 @@ switch ($_GET['do']) {
                 $status .= "<option value=\"{$value['title']}\">{$value['content']}</option>";
             }
             $option = '';
-            $op_rs = explode(',', $row['option']);
+            $op_rs = explode(',', $row['options']);
             foreach ($op_rs as $op_r) {
                 $val = explode('=', $op_r);
                 if ($val[1] == 'true') {
-                    $option .= "$('#{$val[0]}').attr('checked','true');";
+                    $option .= "$('input[value={$val[0]}]').attr('checked','true');\n";
+                    $option .= "$('input[value={$val[0]}]').next().removeClass('lcs_off').addClass('lcs_on');\n";
                 }
             }
             $date1 = get_time($row['day1_at'], 0);
@@ -379,25 +396,30 @@ switch ($_GET['do']) {
                 <script>
                 $(document).ready(function(){
                     $('#name').val('{$row['name']}');
-                    $('#service').val('{$row['service']}');
                     $('#mail').val('{$row['mail']}');
                     $('#tel').val('{$row['tel']}');
-                    $("select[name=number]").find("option[value={$row['number']}]").attr('selected',true);
+
                     $('#staff').html('{$row['staff']}');
                     $('#remark').val('{$row['remark']}');
                     $("select[name=car_type]").find("option[value='{$row['car_type']}']").attr('selected',true);
                     $('#date1').val('{$date1}');
-                    $("select[name=time1]").find("option[value='{$time1}']").attr('selected',true);
                     $('#date2').val('{$date2}');
-                    $("select[name=time2]").find("option[value='{$time2}']").attr('selected',true);
                     $('#date3').val('{$date3}');
-                    $("select[name=time3]").find("option[value='{$time3}']").attr('selected',true);
                     $('#serial').html('{$row['serial']}');
                     $('#serial_block').show();
                     $('.info_header:eq(-1) > .col-12:eq(-1)').append('<div class="row"><div class="col-5"><h5>處理狀態</h5></div><div class="col-7"><h5><select name="status" id="status">{$status}</select></h5></div></div>');
                     $('#serial_back').val('{$row['serial']}');
                     $("select[name=status]").find("option[value='{$row['status']}']").attr('selected',true);
+                    setTimeout(() => {
+                    $('#service > option[value={$row['service']}]').attr('selected','true');
+                    $("select[name=time1]").find("option[value='{$time1}']").attr('selected',true);
+                    $("select[name=time2]").find("option[value='{$time2}']").attr('selected',true);
+                    $("select[name=time3]").find("option[value='{$time3}']").attr('selected',true);
                     {$option}
+                    }, 300);
+                    setTimeout(() => {
+                        $('#number > option[value={$row['number']}]').attr('selected','true');
+                    }, 500);
                 });
                 </script>
                 info;
@@ -410,12 +432,17 @@ switch ($_GET['do']) {
         $day1 = date('Y-m-d H:i:s', strtotime($_POST['date1'] . " " . $_POST['time1']));
         $day2 = date('Y-m-d H:i:s', strtotime($_POST['date2'] . " " . $_POST['time2']));
         $day3 = date('Y-m-d H:i:s', strtotime($_POST['date3'] . " " . $_POST['time3']));
-        $opt1 = (isset($_POST['option1'])) ? ('option1=true') : ('option1=false');
-        $opt2 = (isset($_POST['option2'])) ? ('option2=true') : ('option2=false');
-        $option = $opt1 . ',' . $opt2;
+        $options = '';
+        $option = $_POST['options'];
+        for ($i = 0; $i < count($option); $i++) {
+            $options .= $option[$i];
+            if ($i != count($option) - 1) {
+                $options .= ',';
+            }
+        }
         $sql = "update `orders` set `service`= '{$_POST['service']}',`name`='{$_POST['name']}',";
         $sql .= "`tel`='{$_POST['tel']}',`mail`='{$_POST['mail']}',`number`={$_POST['number']},";
-        $sql .= "`car_type` = '{$_POST['car_type']}',`option`='{$option}',`remark`='{$_POST['remark']}',";
+        $sql .= "`car_type` = '{$_POST['car_type']}',`options`='{$options}',`remark`='{$_POST['remark']}',";
         $sql .= "`day1_at` = '{$day1}',`day2_at`='{$day2}',`day3_at`='{$day3}',";
         $sql .= "`status`='{$_POST['status']}' WHERE `serial` = '{$_POST['serial']}';";
         // echo $sql;
@@ -498,6 +525,32 @@ switch ($_GET['do']) {
                         </div>
                     </div>
                     input_a;
+        }
+        break;
+    case 'case_service_get':
+        $sql = "SELECT `id`,`title` FROM `service` WHERE `enable` = 1;";
+        $result = mysqli_query($con, $sql);
+        $service_list = "<option value=''>請選擇一項服務</option>";
+        if ($result) {
+            $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            foreach ($rows as $row) {
+                $service_list .= "<option value='{$row['id']}'>{$row['title']}</option>";
+            }
+            echo $service_list;
+        }
+        break;
+    case 'people_number_limit':
+        $sql = "SELECT `prices` FROM `service` WHERE `id` = {$_POST['id']};";
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            $row = mysqli_fetch_row($result);
+            $limit = unserialize(base64_decode($row[0]));
+            $limit = $limit[count($limit) - 1];
+            $limit = explode(',', $limit)[0];
+            if (strpos($limit, '~') !== false) {
+                $limit = explode('~', $limit)[1];
+            }
+            echo $limit;
         }
         break;
     case 'assign_list':
@@ -725,7 +778,7 @@ switch ($_GET['do']) {
             $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach ($rows as $row) {
                 echo <<<option
-                    <div class="col-12">
+                    <div class="col-12 my-3">
                     <label for="{$row['name']}">{$row['content']}</label>
                     <input id="{$row['name']}" type="checkbox" class="options w-auto" value="{$row['name']}">
                     </div>
@@ -958,7 +1011,7 @@ switch ($_GET['do']) {
             $alts = unserialize(base64_decode($row['alt']));
             foreach ($prices as $v) {
                 $v = explode(',', $v);
-                $price .= "<div class=\"row\"><div class=\"col-9 col-md-4\"><input class=\"number\" type=\"text\" value=\"{$v[0]}\"></div><div class=\"col-3 col-md-2\"><span>人</span></div><div class=\"col-9 col-md-4\"><input class=\"price\" type=\"number\" value={$v[1]} min=\"0\"></div><div class=\"col-3 col-md-2\"><span>元</span></div></div>";
+                $price .= "<div class=\"row\"><div class=\"col-9 col-md-4\"><input class=\"number\" type=\"text\" value=\"{$v[0]}\"></div><div class=\"col-3 col-md-2\"><span>人</span></div><div class=\"col-9 col-md-4\"><input class=\"price\" type=\"number\" value={$v[1]} ></div><div class=\"col-3 col-md-2\"><span>元</span></div></div>";
             }
             foreach ($options as $v) {
                 if ($v != 'no_Option') {
